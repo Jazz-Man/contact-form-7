@@ -6,12 +6,12 @@ if ( ! class_exists( 'WPCF7_Service' ) ) {
 
 class WPCF7_RECAPTCHA extends WPCF7_Service {
 
-	private static $instance;
+	private static WPCF7_RECAPTCHA $instance;
 	private $sitekeys;
 	private $last_score;
 
 
-	public static function get_instance() {
+	public static function get_instance(): WPCF7_RECAPTCHA {
 		if ( empty( self::$instance ) ) {
 			self::$instance = new self;
 		}
@@ -37,12 +37,8 @@ class WPCF7_RECAPTCHA extends WPCF7_Service {
 	}
 
 
-	public function get_categories() {
+	public function get_categories(): ?array {
 		return array( 'spam_protection' );
-	}
-
-
-	public function icon() {
 	}
 
 

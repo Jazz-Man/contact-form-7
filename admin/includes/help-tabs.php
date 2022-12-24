@@ -2,7 +2,7 @@
 
 class WPCF7_Help_Tabs {
 
-	private $screen;
+	private WP_Screen $screen;
 
 	public function __construct( WP_Screen $screen ) {
 		$this->screen = $screen;

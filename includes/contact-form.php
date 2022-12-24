@@ -35,7 +35,7 @@ class WPCF7_ContactForm {
 	 *
 	 * @return WPCF7_ContactForm Current contact form object.
 	 */
-	public static function get_current() {
+	public static function get_current(): ?WPCF7_ContactForm {
 		return self::$current;
 	}
 
@@ -72,7 +72,7 @@ class WPCF7_ContactForm {
 	 * @param string|array $args Optional. Arguments to be passed to WP_Query.
 	 * @return array Array of WPCF7_ContactForm objects.
 	 */
-	public static function find( $args = '' ) {
+	public static function find( $args = '' ): array {
 		$defaults = array(
 			'post_status' => 'any',
 			'posts_per_page' => -1,
@@ -106,7 +106,7 @@ class WPCF7_ContactForm {
 	 * @param string|array $args Optional. Contact form options.
 	 * @return WPCF7_ContactForm A new contact form object.
 	 */
-	public static function get_template( $args = '' ) {
+	public static function get_template( $args = '' ): ?WPCF7_ContactForm {
 		$args = wp_parse_args( $args, array(
 			'locale' => null,
 			'title' => __( 'Untitled', 'contact-form-7' ),
@@ -155,12 +155,12 @@ class WPCF7_ContactForm {
 	 *
 	 * @return WPCF7_ContactForm A new contact form object.
 	 */
-	public static function get_instance( $post ) {
+	public static function get_instance( $post ): ?WPCF7_ContactForm {
 		$post = get_post( $post );
 
 		if ( ! $post
 		or self::post_type != get_post_type( $post ) ) {
-			return false;
+			return null;
 		}
 
 		return self::$current = new self( $post );
@@ -220,7 +220,7 @@ class WPCF7_ContactForm {
 	/**
 	 * Magic method for property overloading.
 	 */
-	public function __get( $name ) {
+	public function __get( string $name ) {
 		$message = __( '<code>%1$s</code> property of a <code>WPCF7_ContactForm</code> object is <strong>no longer accessible</strong>. Use <code>%2$s</code> method instead.', 'contact-form-7' );
 
 		if ( 'id' == $name ) {
@@ -257,7 +257,7 @@ class WPCF7_ContactForm {
 	/**
 	 * Returns true if this contact form is not yet saved to the database.
 	 */
-	public function initial() {
+	public function initial(): bool {
 		return empty( $this->id );
 	}
 
@@ -324,7 +324,7 @@ class WPCF7_ContactForm {
 	 * @param string $name Property name.
 	 * @return array|string|null Property value. Null if property does not exist.
 	 */
-	private function retrieve_property( $name ) {
+	private function retrieve_property( string $name ) {
 		$property = null;
 
 		if ( ! $this->initial() ) {
@@ -347,7 +347,7 @@ class WPCF7_ContactForm {
 	 * @param string $name Property name.
 	 * @return array|string|null Property value. Null if property does not exist.
 	 */
-	public function prop( $name ) {
+	public function prop( string $name ) {
 		$props = $this->get_properties();
 		return isset( $props[$name] ) ? $props[$name] : null;
 	}
@@ -403,7 +403,7 @@ class WPCF7_ContactForm {
 	 *
 	 * @return string Name.
 	 */
-	public function name() {
+	public function name(): string {
 		return $this->name;
 	}
 
@@ -413,7 +413,7 @@ class WPCF7_ContactForm {
 	 *
 	 * @return string Title.
 	 */
-	public function title() {
+	public function title(): string {
 		return $this->title;
 	}
 
@@ -423,7 +423,7 @@ class WPCF7_ContactForm {
 	 *
 	 * @param string $title Title.
 	 */
-	public function set_title( $title ) {
+	public function set_title( string $title ) {
 		$title = strip_tags( $title );
 		$title = trim( $title );
 
@@ -440,7 +440,7 @@ class WPCF7_ContactForm {
 	 *
 	 * @return string Locale code. Empty string if no valid locale is set.
 	 */
-	public function locale() {
+	public function locale(): string {
 		if ( wpcf7_is_valid_locale( $this->locale ) ) {
 			return $this->locale;
 		} else {
@@ -452,9 +452,9 @@ class WPCF7_ContactForm {
 	/**
 	 * Sets a locale for this contact form.
 	 *
-	 * @param string $locale Locale code.
+	 * @param  string  $locale Locale code.
 	 */
-	public function set_locale( $locale ) {
+	public function set_locale( string $locale ) {
 		$locale = trim( $locale );
 
 		if ( wpcf7_is_valid_locale( $locale ) ) {
@@ -471,17 +471,19 @@ class WPCF7_ContactForm {
 	 * @param string $name Shortcode attribute name.
 	 * @return string|null Attribute value. Null if the attribute does not exist.
 	 */
-	public function shortcode_attr( $name ) {
+	public function shortcode_attr( string $name ): ?string {
 		if ( isset( $this->shortcode_atts[$name] ) ) {
 			return (string) $this->shortcode_atts[$name];
 		}
+
+		return null;
 	}
 
 
 	/**
 	 * Returns true if this contact form is identical to the submitted one.
 	 */
-	public function is_posted() {
+	public function is_posted(): bool {
 		if ( ! WPCF7_Submission::get_instance() ) {
 			return false;
 		}
@@ -640,7 +642,7 @@ class WPCF7_ContactForm {
 	/**
 	 * Returns the class name that matches the given form status.
 	 */
-	private function form_status_class_name( $status ) {
+	private function form_status_class_name( string $status ): string {
 		switch ( $status ) {
 			case 'init':
 				$class = 'init';
@@ -677,7 +679,7 @@ class WPCF7_ContactForm {
 	/**
 	 * Returns a set of hidden fields.
 	 */
-	private function form_hidden_fields() {
+	private function form_hidden_fields(): string {
 		$hidden_fields = array(
 			'_wpcf7' => $this->id(),
 			'_wpcf7_version' => WPCF7_VERSION,
@@ -750,7 +752,7 @@ class WPCF7_ContactForm {
 	/**
 	 * Returns the response output that is only accessible from screen readers.
 	 */
-	public function screen_reader_response() {
+	public function screen_reader_response(): string {
 		$primary_response = '';
 		$validation_errors = array();
 
@@ -813,7 +815,7 @@ class WPCF7_ContactForm {
 	 *
 	 * @param string $name Input field name.
 	 */
-	public function validation_error( $name ) {
+	public function validation_error( string $name ) {
 		$error = '';
 
 		if ( $this->is_posted() ) {
@@ -848,7 +850,7 @@ class WPCF7_ContactForm {
 	 *
 	 * @return string Replaced form content.
 	 */
-	public function replace_all_form_tags() {
+	public function replace_all_form_tags(): string {
 		$manager = WPCF7_FormTagsManager::get_instance();
 		$form = $this->prop( 'form' );
 
@@ -885,9 +887,9 @@ class WPCF7_ContactForm {
 	 * Scans form-tags from the form template.
 	 *
 	 * @param string|array|null $cond Optional. Filters. Default null.
-	 * @return array Form-tags matching the given filter conditions.
+	 * @return \WPCF7_FormTag[] Form-tags matching the given filter conditions.
 	 */
-	public function scan_form_tags( $cond = null ) {
+	public function scan_form_tags( $cond = null ): array {
 		$manager = WPCF7_FormTagsManager::get_instance();
 
 		if ( empty( $this->scanned_form_tags ) ) {
@@ -922,7 +924,7 @@ class WPCF7_ContactForm {
 	 *
 	 * @return string Replaced form content. wpcf7_form_elements filters applied.
 	 */
-	public function form_elements() {
+	public function form_elements(): string {
 		return apply_filters( 'wpcf7_form_elements',
 			$this->replace_all_form_tags()
 		);
@@ -977,7 +979,7 @@ class WPCF7_ContactForm {
 	 *
 	 * @param string $template_name Optional. Mail template name. Default 'mail'.
 	 */
-	public function suggest_mail_tags( $template_name = 'mail' ) {
+	public function suggest_mail_tags( string $template_name = 'mail' ) {
 		$mail = wp_parse_args( $this->prop( $template_name ),
 			array(
 				'active' => false,
@@ -1017,7 +1019,7 @@ class WPCF7_ContactForm {
 	 * @param string|array $args Optional. Submission options. Default empty.
 	 * @return array Result of submission.
 	 */
-	public function submit( $args = '' ) {
+	public function submit( $args = '' ): array {
 		$args = wp_parse_args( $args, array(
 			'skip_mail' =>
 				( $this->in_demo_mode()
@@ -1027,7 +1029,7 @@ class WPCF7_ContactForm {
 
 		if ( $this->is_true( 'subscribers_only' )
 		and ! current_user_can( 'wpcf7_submit', $this->id() ) ) {
-			$result = array(
+			return array(
 				'contact_form_id' => $this->id(),
 				'status' => 'error',
 				'message' => __(
@@ -1035,8 +1037,6 @@ class WPCF7_ContactForm {
 					'contact-form-7'
 				),
 			);
-
-			return $result;
 		}
 
 		$submission = WPCF7_Submission::get_instance( $this, array(
@@ -1063,10 +1063,11 @@ class WPCF7_ContactForm {
 	 * Returns message used for given status.
 	 *
 	 * @param string $status Status.
-	 * @param bool $filter Optional. Whether filters are applied. Default true.
+	 * @param  bool  $filter Optional. Whether filters are applied. Default true.
+	 *
 	 * @return string Message.
 	 */
-	public function message( $status, $filter = true ) {
+	public function message( string $status, bool $filter = true ): string {
 		$messages = $this->prop( 'messages' );
 		$message = isset( $messages[$status] ) ? $messages[$status] : '';
 
@@ -1081,26 +1082,27 @@ class WPCF7_ContactForm {
 	/**
 	 * Filters a message.
 	 *
-	 * @param string $message Message to filter.
-	 * @param string $status Optional. Status. Default empty.
+	 * @param  string  $message Message to filter.
+	 * @param  string  $status Optional. Status. Default empty.
+	 *
 	 * @return string Filtered message.
 	 */
-	public function filter_message( $message, $status = '' ) {
+	public function filter_message( string $message, string $status = '' ): string {
 		$message = wpcf7_mail_replace_tags( $message );
 		$message = apply_filters( 'wpcf7_display_message', $message, $status );
-		$message = wp_strip_all_tags( $message );
 
-		return $message;
+		return wp_strip_all_tags( $message );
 	}
 
 
 	/**
 	 * Returns the additional setting value searched by name.
 	 *
-	 * @param string $name Name of setting.
+	 * @param  string  $name Name of setting.
+	 *
 	 * @return string Additional setting value.
 	 */
-	public function pref( $name ) {
+	public function pref( string $name ) {
 		$settings = $this->additional_setting( $name );
 
 		if ( $settings ) {
@@ -1116,7 +1118,7 @@ class WPCF7_ContactForm {
 	 * @param int $max Maximum result item count.
 	 * @return array Additional setting values.
 	 */
-	public function additional_setting( $name, $max = 1 ) {
+	public function additional_setting( string $name, $max = 1 ) {
 		$settings = (array) explode( "\n", $this->prop( 'additional_settings' ) );
 
 		$pattern = '/^([a-zA-Z0-9_]+)[\t ]*:(.*)$/';
@@ -1143,10 +1145,11 @@ class WPCF7_ContactForm {
 	/**
 	 * Returns true if the specified setting has a truthy string value.
 	 *
-	 * @param string $name Name of setting.
+	 * @param  string  $name Name of setting.
+	 *
 	 * @return bool True if the setting value is 'on', 'true', or '1'.
 	 */
-	public function is_true( $name ) {
+	public function is_true( string $name ): bool {
 		return in_array(
 			$this->pref( $name ),
 			array( 'on', 'true', '1' ),
@@ -1158,7 +1161,7 @@ class WPCF7_ContactForm {
 	/**
 	 * Returns true if this contact form is in the demo mode.
 	 */
-	public function in_demo_mode() {
+	public function in_demo_mode(): bool {
 		return $this->is_true( 'demo_mode' );
 	}
 
@@ -1166,7 +1169,7 @@ class WPCF7_ContactForm {
 	/**
 	 * Returns true if nonce is active for this contact form.
 	 */
-	public function nonce_is_active() {
+	public function nonce_is_active(): bool {
 		$is_active = WPCF7_VERIFY_NONCE;
 
 		if ( $this->is_true( 'subscribers_only' ) ) {
@@ -1180,10 +1183,11 @@ class WPCF7_ContactForm {
 	/**
 	 * Returns true if the specified setting has a falsey string value.
 	 *
-	 * @param string $name Name of setting.
+	 * @param  string  $name Name of setting.
+	 *
 	 * @return bool True if the setting value is 'off', 'false', or '0'.
 	 */
-	public function is_false( $name ) {
+	public function is_false( string $name ): bool {
 		return in_array(
 			$this->pref( $name ),
 			array( 'off', 'false', '0' ),
@@ -1224,7 +1228,7 @@ class WPCF7_ContactForm {
 	 *
 	 * @return int The post ID on success. The value 0 on failure.
 	 */
-	public function save() {
+	public function save(): int {
 		$title = wp_slash( $this->title );
 		$props = wp_slash( $this->get_properties() );
 
@@ -1276,7 +1280,7 @@ class WPCF7_ContactForm {
 	 *
 	 * @return WPCF7_ContactForm New contact form object.
 	 */
-	public function copy() {
+	public function copy(): WPCF7_ContactForm {
 		$new = new self;
 		$new->title = $this->title . '_copy';
 		$new->locale = $this->locale;
@@ -1289,9 +1293,9 @@ class WPCF7_ContactForm {
 	/**
 	 * Deletes this contact form.
 	 */
-	public function delete() {
+	public function delete(): bool {
 		if ( $this->initial() ) {
-			return;
+			return false;
 		}
 
 		if ( wp_delete_post( $this->id, true ) ) {

@@ -6,7 +6,7 @@
  * @param string $path File path relative to the plugin root directory.
  * @return string Absolute file path.
  */
-function wpcf7_plugin_path( $path = '' ) {
+function wpcf7_plugin_path( string $path = '' ): string {
 	return path_join( WPCF7_PLUGIN_DIR, trim( $path, '/' ) );
 }
 
@@ -17,7 +17,7 @@ function wpcf7_plugin_path( $path = '' ) {
  * @param string $path File path relative to the plugin root directory.
  * @return string URL.
  */
-function wpcf7_plugin_url( $path = '' ) {
+function wpcf7_plugin_url( string $path = '' ): string {
 	$url = plugins_url( $path, WPCF7_PLUGIN );
 
 	if ( is_ssl()
@@ -32,10 +32,11 @@ function wpcf7_plugin_url( $path = '' ) {
 /**
  * Include a file under WPCF7_PLUGIN_MODULES_DIR.
  *
- * @param string $path File path relative to the module dir.
+ * @param  string  $path File path relative to the module dir.
+ *
  * @return bool True on success, false on failure.
  */
-function wpcf7_include_module_file( $path ) {
+function wpcf7_include_module_file( string $path ): bool {
 	$dir = WPCF7_PLUGIN_MODULES_DIR;
 
 	if ( empty( $dir ) or ! is_dir( $dir ) ) {
@@ -80,14 +81,15 @@ function wpcf7_upload_dir( $type = false ) {
 /**
  * Verifies that a correct security nonce was used with time limit.
  *
- * @param string $nonce Nonce value that was used for verification.
- * @param string $action Optional. Context to what is taking place.
+ * @param  string  $nonce Nonce value that was used for verification.
+ * @param  string  $action Optional. Context to what is taking place.
  *                       Default 'wp_rest'.
+ *
  * @return int|bool 1 if the nonce is generated between 0-12 hours ago,
  *                  2 if the nonce is generated between 12-24 hours ago.
  *                  False if the nonce is invalid.
  */
-function wpcf7_verify_nonce( $nonce, $action = 'wp_rest' ) {
+function wpcf7_verify_nonce( string $nonce, string $action = 'wp_rest' ) {
 	return wp_verify_nonce( $nonce, $action );
 }
 
@@ -96,11 +98,12 @@ function wpcf7_verify_nonce( $nonce, $action = 'wp_rest' ) {
  * Creates a cryptographic token tied to a specific action, user, user session,
  * and window of time.
  *
- * @param string $action Optional. Context to what is taking place.
+ * @param  string  $action Optional. Context to what is taking place.
  *                       Default 'wp_rest'.
+ *
  * @return string The token.
  */
-function wpcf7_create_nonce( $action = 'wp_rest' ) {
+function wpcf7_create_nonce( string $action = 'wp_rest' ): string {
 	return wp_create_nonce( $action );
 }
 
@@ -184,7 +187,7 @@ function wpcf7_support_html5() {
 /**
  * Returns true if HTML5 fallback is active.
  */
-function wpcf7_support_html5_fallback() {
+function wpcf7_support_html5_fallback(): bool {
 	return (bool) apply_filters( 'wpcf7_support_html5_fallback', false );
 }
 
@@ -212,7 +215,7 @@ function wpcf7_validate_configuration() {
 /**
  * Returns true if wpcf7_autop() is applied to form content.
  */
-function wpcf7_autop_or_not() {
+function wpcf7_autop_or_not(): bool {
 	return (bool) apply_filters( 'wpcf7_autop_or_not', WPCF7_AUTOP );
 }
 
@@ -239,7 +242,7 @@ function wpcf7_load_css() {
  * @param array $atts Associative array of attribute name and value pairs.
  * @return string Formatted HTML attributes.
  */
-function wpcf7_format_atts( $atts ) {
+function wpcf7_format_atts( $atts ): string {
 	$atts_filtered = array();
 
 	foreach ( $atts as $name => $value ) {
@@ -283,12 +286,13 @@ function wpcf7_format_atts( $atts ) {
 /**
  * Builds an HTML anchor element.
  *
- * @param string $url Link URL.
- * @param string $anchor_text Anchor label text.
+ * @param  string  $url Link URL.
+ * @param  string  $anchor_text Anchor label text.
  * @param string|array $args Optional. Link options.
+ *
  * @return string Formatted anchor element.
  */
-function wpcf7_link( $url, $anchor_text, $args = '' ) {
+function wpcf7_link( string $url, string $anchor_text, $args = '' ): string {
 	$args = wp_parse_args( $args, array(
 		'id' => null,
 		'class' => null,
@@ -323,7 +327,7 @@ function wpcf7_get_request_uri() {
 /**
  * Registers post types used for this plugin.
  */
-function wpcf7_register_post_types() {
+function wpcf7_register_post_types(): bool {
 	if ( class_exists( 'WPCF7_ContactForm' ) ) {
 		WPCF7_ContactForm::register_post_type();
 		return true;
@@ -339,7 +343,7 @@ function wpcf7_register_post_types() {
  * @param string|array $args Optional. Output options.
  * @return string Version string.
  */
-function wpcf7_version( $args = '' ) {
+function wpcf7_version( $args = '' ): string {
 	$defaults = array(
 		'limit' => -1,
 		'only_major' => false,
@@ -364,21 +368,20 @@ function wpcf7_version( $args = '' ) {
 		$ver = array_slice( $ver, 0, $args['limit'] );
 	}
 
-	$ver = implode( '.', $ver );
-
-	return $ver;
+	return implode( '.', $ver );
 }
 
 
 /**
  * Returns array entries that match the given version.
  *
- * @param string $version The version to search for.
+ * @param  string  $version The version to search for.
  * @param array $input Search target array.
+ *
  * @return array|bool Array of matched entries. False on failure.
  */
-function wpcf7_version_grep( $version, array $input ) {
-	$pattern = '/^' . preg_quote( (string) $version, '/' ) . '(?:\.|$)/';
+function wpcf7_version_grep( string $version, array $input ) {
+	$pattern = '/^' . preg_quote( $version, '/' ) . '(?:\.|$)/';
 
 	return preg_grep( $pattern, $input );
 }
@@ -387,10 +390,11 @@ function wpcf7_version_grep( $version, array $input ) {
 /**
  * Returns an enctype attribute value.
  *
- * @param string $enctype Enctype value.
+ * @param  string  $enctype Enctype value.
+ *
  * @return string Enctype value. Empty if not a valid enctype.
  */
-function wpcf7_enctype_value( $enctype ) {
+function wpcf7_enctype_value( string $enctype ): string {
 	$enctype = trim( $enctype );
 
 	if ( empty( $enctype ) ) {
@@ -420,10 +424,11 @@ function wpcf7_enctype_value( $enctype ) {
 /**
  * Removes directory recursively.
  *
- * @param string $dir Directory path.
+ * @param  string  $dir Directory path.
+ *
  * @return bool True on success, false on failure.
  */
-function wpcf7_rmdir_p( $dir ) {
+function wpcf7_rmdir_p( string $dir ): bool {
 	if ( is_file( $dir ) ) {
 		$file = $dir;
 
@@ -476,10 +481,11 @@ function wpcf7_rmdir_p( $dir ) {
  * @link https://developer.wordpress.org/reference/functions/_http_build_query/
  *
  * @param array $args URL query parameters.
- * @param string $key Optional. If specified, used to prefix key name.
+ * @param  string  $key Optional. If specified, used to prefix key name.
+ *
  * @return string Query string.
  */
-function wpcf7_build_query( $args, $key = '' ) {
+function wpcf7_build_query( $args, string $key = '' ): string {
 	$sep = '&';
 	$ret = array();
 
@@ -497,9 +503,9 @@ function wpcf7_build_query( $args, $key = '' ) {
 		}
 
 		if ( is_array( $v ) or is_object( $v ) ) {
-			array_push( $ret, wpcf7_build_query( $v, $k ) );
+			$ret[] = wpcf7_build_query( $v, $k );
 		} else {
-			array_push( $ret, $k . '=' . urlencode( $v ) );
+			$ret[] = $k . '=' . urlencode( $v );
 		}
 	}
 
@@ -516,7 +522,7 @@ function wpcf7_build_query( $args, $key = '' ) {
  * @return int|bool The number of code units, or false if
  *                  mb_convert_encoding is not available.
  */
-function wpcf7_count_code_units( $text ) {
+function wpcf7_count_code_units( string $text ) {
 	static $use_mb = null;
 
 	if ( is_null( $use_mb ) ) {
@@ -547,7 +553,7 @@ function wpcf7_count_code_units( $text ) {
 /**
  * Returns true if WordPress is running on the localhost.
  */
-function wpcf7_is_localhost() {
+function wpcf7_is_localhost(): bool {
 	$sitename = wp_parse_url( network_home_url(), PHP_URL_HOST );
 	return in_array( strtolower( $sitename ), array( 'localhost', '127.0.0.1' ) );
 }
@@ -556,12 +562,12 @@ function wpcf7_is_localhost() {
 /**
  * Marks a function as deprecated and informs when it has been used.
  *
- * @param string $function_name The function that was called.
- * @param string $version The version of Contact Form 7 that deprecated
+ * @param  string  $function_name The function that was called.
+ * @param  string  $version The version of Contact Form 7 that deprecated
  *                        the function.
- * @param string $replacement The function that should have been called.
+ * @param  string  $replacement The function that should have been called.
  */
-function wpcf7_deprecated_function( $function_name, $version, $replacement ) {
+function wpcf7_deprecated_function( string $function_name, string $version, string $replacement ) {
 	if ( WP_DEBUG ) {
 		if ( function_exists( '__' ) ) {
 			trigger_error(
@@ -588,14 +594,14 @@ function wpcf7_deprecated_function( $function_name, $version, $replacement ) {
 /**
  * Fires functions attached to a deprecated filter hook.
  *
- * @param string $hook_name The name of the filter hook.
+ * @param  string  $hook_name The name of the filter hook.
  * @param array $args Array of additional function arguments to be
  *                    passed to apply_filters().
- * @param string $version The version of Contact Form 7 that deprecated
+ * @param  string  $version The version of Contact Form 7 that deprecated
  *                        the hook.
- * @param string $replacement The hook that should have been used.
+ * @param  string  $replacement The hook that should have been used.
  */
-function wpcf7_apply_filters_deprecated( $hook_name, $args, $version, $replacement = '' ) {
+function wpcf7_apply_filters_deprecated( string $hook_name, $args, string $version, string $replacement = '' ) {
 	if ( ! has_filter( $hook_name ) ) {
 		return $args[0];
 	}
@@ -632,12 +638,12 @@ function wpcf7_apply_filters_deprecated( $hook_name, $args, $version, $replaceme
 /**
  * Marks something as being incorrectly called.
  *
- * @param string $function_name The function that was called.
- * @param string $message A message explaining what has been done incorrectly.
- * @param string $version The version of Contact Form 7 where the message
+ * @param  string  $function_name The function that was called.
+ * @param  string  $message A message explaining what has been done incorrectly.
+ * @param  string  $version The version of Contact Form 7 where the message
  *                        was added.
  */
-function wpcf7_doing_it_wrong( $function_name, $message, $version ) {
+function wpcf7_doing_it_wrong( string $function_name, string $message, string $version ) {
 	if ( WP_DEBUG ) {
 		if ( function_exists( '__' ) ) {
 			if ( $version ) {
@@ -683,11 +689,11 @@ function wpcf7_doing_it_wrong( $function_name, $message, $version ) {
 /**
  * Triggers an error about a remote HTTP request and response.
  *
- * @param string $url The resource URL.
+ * @param  string  $url The resource URL.
  * @param array $request Request arguments.
  * @param array|WP_Error $response The response or WP_Error on failure.
  */
-function wpcf7_log_remote_request( $url, $request, $response ) {
+function wpcf7_log_remote_request( string $url, $request, $response ) {
 	$log = sprintf(
 		/* translators: 1: response code, 2: message, 3: body, 4: URL */
 		__( 'HTTP Response: %1$s %2$s %3$s from %4$s', 'contact-form-7' ),
@@ -710,10 +716,11 @@ function wpcf7_log_remote_request( $url, $request, $response ) {
 /**
  * Anonymizes an IP address by masking local part.
  *
- * @param string $ip_addr The original IP address.
+ * @param  string  $ip_addr The original IP address.
+ *
  * @return string|bool Anonymized IP address, or false on failure.
  */
-function wpcf7_anonymize_ip_addr( $ip_addr ) {
+function wpcf7_anonymize_ip_addr( string $ip_addr ) {
 	if ( ! function_exists( 'inet_ntop' )
 	or ! function_exists( 'inet_pton' ) ) {
 		return $ip_addr;

@@ -2,8 +2,8 @@
 
 class WPCF7_Editor {
 
-	private $contact_form;
-	private $panels = array();
+	private WPCF7_ContactForm $contact_form;
+	private array $panels = array();
 
 	public function __construct( WPCF7_ContactForm $contact_form ) {
 		$this->contact_form = $contact_form;

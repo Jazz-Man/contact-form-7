@@ -129,7 +129,7 @@ function wpcf7_enqueue_scripts() {
 /**
  * Returns true if the main script is enqueued.
  */
-function wpcf7_script_is() {
+function wpcf7_script_is(): bool {
 	return wp_script_is( 'contact-form-7' );
 }
 
@@ -151,7 +151,7 @@ function wpcf7_enqueue_styles() {
 /**
  * Returns true if the main stylesheet is enqueued.
  */
-function wpcf7_style_is() {
+function wpcf7_style_is(): bool {
 	return wp_style_is( 'contact-form-7' );
 }
 

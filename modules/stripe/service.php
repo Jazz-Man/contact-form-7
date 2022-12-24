@@ -6,11 +6,11 @@ if ( ! class_exists( 'WPCF7_Service' ) ) {
 
 class WPCF7_Stripe extends WPCF7_Service {
 
-	private static $instance;
-	private $api_keys;
+	private static WPCF7_Stripe $instance;
+	private ?array $api_keys;
 
 
-	public static function get_instance() {
+	public static function get_instance(): WPCF7_Stripe {
 		if ( empty( self::$instance ) ) {
 			self::$instance = new self;
 		}
@@ -37,32 +37,26 @@ class WPCF7_Stripe extends WPCF7_Service {
 	}
 
 
-	public function is_active() {
+	public function is_active(): bool {
 		return (bool) $this->get_api_keys();
 	}
 
 
 	public function api() {
 		if ( $this->is_active() ) {
-			$api = new WPCF7_Stripe_API( $this->api_keys['secret'] );
-			return $api;
+			return new WPCF7_Stripe_API( $this->api_keys['secret'] );
 		}
 	}
 
 
-	public function get_api_keys() {
+	public function get_api_keys(): array {
 		return $this->api_keys;
 	}
 
 
-	public function get_categories() {
+	public function get_categories() : array {
 		return array( 'payments' );
 	}
-
-
-	public function icon() {
-	}
-
 
 	public function link() {
 		echo wpcf7_link(

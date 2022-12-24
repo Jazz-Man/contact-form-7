@@ -11,8 +11,8 @@
  */
 class WPCF7_Pipe {
 
-	public $before = '';
-	public $after = '';
+	public ?string $before = '';
+	public ?string $after = '';
 
 	public function __construct( $text ) {
 		$text = (string) $text;
@@ -34,7 +34,10 @@ class WPCF7_Pipe {
  */
 class WPCF7_Pipes {
 
-	private $pipes = array();
+	/**
+	 * @var \WPCF7_Pipe[]
+	 */
+	private array $pipes = array();
 
 	public function __construct( array $texts ) {
 		foreach ( $texts as $text ) {
@@ -47,7 +50,7 @@ class WPCF7_Pipes {
 		$this->pipes[] = $pipe;
 	}
 
-	public function do_pipe( $input ) {
+	public function do_pipe( string $input ): ?string {
 		$input_canonical = wpcf7_canonicalize( $input, array(
 			'strto' => 'as-is',
 		) );
@@ -65,7 +68,7 @@ class WPCF7_Pipes {
 		return $input;
 	}
 
-	public function collect_befores() {
+	public function collect_befores(): array {
 		$befores = array();
 
 		foreach ( $this->pipes as $pipe ) {
@@ -75,7 +78,7 @@ class WPCF7_Pipes {
 		return $befores;
 	}
 
-	public function collect_afters() {
+	public function collect_afters(): array {
 		$afters = array();
 
 		foreach ( $this->pipes as $pipe ) {
@@ -85,11 +88,11 @@ class WPCF7_Pipes {
 		return $afters;
 	}
 
-	public function zero() {
+	public function zero(): bool {
 		return empty( $this->pipes );
 	}
 
-	public function random_pipe() {
+	public function random_pipe(): ?WPCF7_Pipe {
 		if ( $this->zero() ) {
 			return null;
 		}
@@ -97,7 +100,7 @@ class WPCF7_Pipes {
 		return $this->pipes[array_rand( $this->pipes )];
 	}
 
-	public function to_array() {
+	public function to_array(): array {
 		return array_map(
 			function( WPCF7_Pipe $pipe ) {
 				return array(

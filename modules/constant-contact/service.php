@@ -14,10 +14,10 @@ class WPCF7_ConstantContact extends WPCF7_Service_OAuth2 {
 	const token_endpoint
 		= 'https://authz.constantcontact.com/oauth2/default/v1/token';
 
-	private static $instance;
+	private static WPCF7_ConstantContact $instance;
 	protected $contact_lists = array();
 
-	public static function get_instance() {
+	public static function get_instance(): WPCF7_ConstantContact {
 		if ( empty( self::$instance ) ) {
 			self::$instance = new self;
 		}
@@ -101,15 +101,12 @@ class WPCF7_ConstantContact extends WPCF7_Service_OAuth2 {
 		$this->save_data();
 	}
 
-	public function get_title() {
+	public function get_title(): string {
 		return __( 'Constant Contact', 'contact-form-7' );
 	}
 
-	public function get_categories() {
+	public function get_categories(): array {
 		return array( 'email_marketing' );
-	}
-
-	public function icon() {
 	}
 
 	public function link() {
@@ -123,7 +120,7 @@ class WPCF7_ConstantContact extends WPCF7_Service_OAuth2 {
 		return admin_url( '/?auth=' . self::service_name );
 	}
 
-	protected function menu_page_url( $args = '' ) {
+	protected function menu_page_url( $args = '' ): string {
 		$args = wp_parse_args( $args, array() );
 
 		$url = menu_page_url( 'wpcf7-integration', false );

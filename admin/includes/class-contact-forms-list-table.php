@@ -7,15 +7,13 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 class WPCF7_Contact_Form_List_Table extends WP_List_Table {
 
 	public static function define_columns() {
-		$columns = array(
+		return array(
 			'cb' => '<input type="checkbox" />',
 			'title' => __( 'Title', 'contact-form-7' ),
 			'shortcode' => __( 'Shortcode', 'contact-form-7' ),
 			'author' => __( 'Author', 'contact-form-7' ),
 			'date' => __( 'Date', 'contact-form-7' ),
 		);
-
-		return $columns;
 	}
 
 	public function __construct() {
@@ -86,11 +84,9 @@ class WPCF7_Contact_Form_List_Table extends WP_List_Table {
 	}
 
 	protected function get_bulk_actions() {
-		$actions = array(
+		return array(
 			'delete' => __( 'Delete', 'contact-form-7' ),
 		);
-
-		return $actions;
 	}
 
 	protected function column_default( $item, $column_name ) {

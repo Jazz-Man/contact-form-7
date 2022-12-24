@@ -4,8 +4,8 @@
  * Server-side user input validation manager.
  */
 class WPCF7_Validation implements ArrayAccess {
-	private $invalid_fields = array();
-	private $container = array();
+	private array $invalid_fields = array();
+	private array $container = array();
 
 	public function __construct() {
 		$this->container = array(
@@ -65,13 +65,14 @@ class WPCF7_Validation implements ArrayAccess {
 	/**
 	 * Returns true if the target field is valid.
 	 *
-	 * @param string|null $name Optional. If specified, this is the name of
+	 * @param  string|null  $name Optional. If specified, this is the name of
 	 *                    the target field. Default null.
+	 *
 	 * @return bool True if the target field has no error. If no target is
 	 *              specified, returns true if all fields are valid.
 	 *              Otherwise false.
 	 */
-	public function is_valid( $name = null ) {
+	public function is_valid( ?string $name = null ): bool {
 		if ( ! empty( $name ) ) {
 			return ! isset( $this->invalid_fields[$name] );
 		} else {
@@ -85,7 +86,7 @@ class WPCF7_Validation implements ArrayAccess {
 	 *
 	 * @return array The associative array of invalid fields.
 	 */
-	public function get_invalid_fields() {
+	public function get_invalid_fields(): array {
 		return $this->invalid_fields;
 	}
 

@@ -9,7 +9,7 @@ add_filter(
 /**
  * Registers the sendinblue contact form property.
  */
-function wpcf7_sendinblue_register_property( $properties, $contact_form ) {
+function wpcf7_sendinblue_register_property( array $properties, $contact_form ) {
 	$service = WPCF7_Sendinblue::get_instance();
 
 	if ( $service->is_active() ) {
@@ -31,7 +31,7 @@ add_action(
 /**
  * Saves the sendinblue property value.
  */
-function wpcf7_sendinblue_save_contact_form( $contact_form, $args, $context ) {
+function wpcf7_sendinblue_save_contact_form( \WPCF7_ContactForm $contact_form, $args, $context ) {
 	$service = WPCF7_Sendinblue::get_instance();
 
 	if ( ! $service->is_active() ) {

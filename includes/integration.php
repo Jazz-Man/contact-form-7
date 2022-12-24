@@ -7,10 +7,10 @@
 
 class WPCF7_Integration {
 
-	private static $instance;
+	private static WPCF7_Integration $instance;
 
-	private $services = array();
-	private $categories = array();
+	private array $services = array();
+	private array $categories = array();
 
 	private function __construct() {}
 
@@ -20,7 +20,7 @@ class WPCF7_Integration {
 	 *
 	 * @return array Service categories.
 	 */
-	public static function get_builtin_categories() {
+	public static function get_builtin_categories(): array {
 		return array(
 			'spam_protection' => __( 'Spam protection', 'contact-form-7' ),
 			'email_marketing' => __( 'Email marketing', 'contact-form-7' ),
@@ -34,7 +34,7 @@ class WPCF7_Integration {
 	 *
 	 * @return WPCF7_Integration The instance.
 	 */
-	public static function get_instance() {
+	public static function get_instance(): WPCF7_Integration {
 		if ( empty( self::$instance ) ) {
 			self::$instance = new self;
 			self::$instance->categories = self::get_builtin_categories();
@@ -47,7 +47,7 @@ class WPCF7_Integration {
 	/**
 	 * Adds a service to the services list.
 	 */
-	public function add_service( $name, WPCF7_Service $service ) {
+	public function add_service( string $name, WPCF7_Service $service ) {
 		$name = sanitize_key( $name );
 
 		if ( empty( $name )
@@ -62,7 +62,7 @@ class WPCF7_Integration {
 	/**
 	 * Adds a service category to the categories list.
 	 */
-	public function add_category( $name, $title ) {
+	public function add_category( string $name, $title ) {
 		$name = sanitize_key( $name );
 
 		if ( empty( $name )
@@ -77,9 +77,9 @@ class WPCF7_Integration {
 	/**
 	 * Returns true if a service with the name exists in the services list.
 	 *
-	 * @param string $name The name of service to search.
+	 * @param  string  $name The name of service to search.
 	 */
-	public function service_exists( $name = '' ) {
+	public function service_exists( string $name = '' ): bool {
 		if ( '' == $name ) {
 			return (bool) count( $this->services );
 		} else {
@@ -91,15 +91,16 @@ class WPCF7_Integration {
 	/**
 	 * Returns a service object with the name.
 	 *
-	 * @param string $name The name of service.
-	 * @return WPCF7_Service|bool The service object if it exists,
+	 * @param  string  $name The name of service.
+	 *
+	 * @return WPCF7_Service|null The service object if it exists,
 	 *                            false otherwise.
 	 */
-	public function get_service( $name ) {
+	public function get_service( string $name ):?\WPCF7_Service {
 		if ( $this->service_exists( $name ) ) {
 			return $this->services[$name];
 		} else {
-			return false;
+			return null;
 		}
 	}
 
@@ -173,12 +174,12 @@ abstract class WPCF7_Service {
 	abstract public function is_active();
 
 
-	public function get_categories() {
+	public function get_categories(): ?array {
 		return array();
 	}
 
 
-	public function icon() {
+	public function icon(): ?string {
 		return '';
 	}
 
@@ -188,15 +189,15 @@ abstract class WPCF7_Service {
 	}
 
 
-	public function load( $action = '' ) {
+	public function load( string $action = '' ) {
 	}
 
 
-	public function display( $action = '' ) {
+	public function display( string $action = '' ) {
 	}
 
 
-	public function admin_notice( $message = '' ) {
+	public function admin_notice( string $message = '' ) {
 	}
 
 }
@@ -218,12 +219,12 @@ class WPCF7_Service_OAuth2 extends WPCF7_Service {
 	protected $token_endpoint = 'https://example.com/token';
 
 
-	public function get_title() {
+	public function get_title(): string {
 		return '';
 	}
 
 
-	public function is_active() {
+	public function is_active(): bool {
 		return ! empty( $this->refresh_token );
 	}
 
@@ -241,7 +242,7 @@ class WPCF7_Service_OAuth2 extends WPCF7_Service {
 	}
 
 
-	protected function menu_page_url( $args = '' ) {
+	protected function menu_page_url( $args = '' ): string {
 		return menu_page_url( 'wpcf7-integration', false );
 	}
 

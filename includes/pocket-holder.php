@@ -5,7 +5,7 @@
  */
 trait WPCF7_PocketHolder {
 
-	protected $pocket = array();
+	protected array $pocket = array();
 
 	public function pull( $key ) {
 		if ( isset( $this->pocket[$key] ) ) {

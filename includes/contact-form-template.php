@@ -45,7 +45,7 @@ class WPCF7_ContactFormTemplate {
 		return trim( $template );
 	}
 
-	public static function mail() {
+	public static function mail(): array {
 		$template = array(
 			'subject' => sprintf(
 				/* translators: 1: blog name, 2: [your-subject] */
@@ -88,7 +88,7 @@ class WPCF7_ContactFormTemplate {
 		return $template;
 	}
 
-	public static function mail_2() {
+	public static function mail_2(): array {
 		$template = array(
 			'active' => false,
 			'subject' => sprintf(
@@ -146,7 +146,7 @@ class WPCF7_ContactFormTemplate {
 		return 'wordpress@' . $sitename;
 	}
 
-	public static function messages() {
+	public static function messages(): array {
 		$messages = array();
 
 		foreach ( wpcf7_messages() as $key => $arr ) {

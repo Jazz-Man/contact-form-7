@@ -5,18 +5,39 @@
  * removed in a later version.
  */
 
+/**
+ * @deprecated
+ *
+ * @param $tag
+ * @param $callback
+ * @param $has_name
+ *
+ * @return void
+ */
 function wpcf7_add_shortcode( $tag, $callback, $has_name = false ) {
 	wpcf7_deprecated_function( __FUNCTION__, '4.6', 'wpcf7_add_form_tag' );
 
 	return wpcf7_add_form_tag( $tag, $callback, $has_name );
 }
 
+/**
+ * @deprecated
+ * @param $tag
+ *
+ * @return void
+ */
 function wpcf7_remove_shortcode( $tag ) {
 	wpcf7_deprecated_function( __FUNCTION__, '4.6', 'wpcf7_remove_form_tag' );
 
 	return wpcf7_remove_form_tag( $tag );
 }
 
+/**
+ * @deprecated
+ * @param $content
+ *
+ * @return array|string|null
+ */
 function wpcf7_do_shortcode( $content ) {
 	wpcf7_deprecated_function( __FUNCTION__, '4.6',
 		'wpcf7_replace_all_form_tags' );
@@ -24,12 +45,22 @@ function wpcf7_do_shortcode( $content ) {
 	return wpcf7_replace_all_form_tags( $content );
 }
 
+/**
+ *
+ * @deprecated
+ * @param $cond
+ *
+ * @return array
+ */
 function wpcf7_scan_shortcode( $cond = null ) {
 	wpcf7_deprecated_function( __FUNCTION__, '4.6', 'wpcf7_scan_form_tags' );
 
 	return wpcf7_scan_form_tags( $cond );
 }
 
+/**
+ * @deprecated
+ */
 class WPCF7_ShortcodeManager {
 
 	private static $form_tags_manager;
@@ -91,6 +122,11 @@ class WPCF7_ShortcodeManager {
 	}
 }
 
+/**
+ *
+ * @deprecated
+ *
+ */
 class WPCF7_Shortcode extends WPCF7_FormTag {
 
 	public function __construct( $tag ) {

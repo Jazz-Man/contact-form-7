@@ -104,7 +104,7 @@ add_filter(
  *
  * @return bool True if the spam check is not necessary.
  */
-function wpcf7_stripe_skip_spam_check( $skip_spam_check, $submission ) {
+function wpcf7_stripe_skip_spam_check( bool $skip_spam_check, \WPCF7_Submission $submission ): bool {
 	$service = WPCF7_Stripe::get_instance();
 
 	if ( ! $service->is_active() ) {
@@ -139,7 +139,7 @@ add_action(
 /**
  * Creates Stripe's Payment Intent.
  */
-function wpcf7_stripe_before_send_mail( $contact_form, &$abort, $submission ) {
+function wpcf7_stripe_before_send_mail( \WPCF7_ContactForm $contact_form, &$abort, \WPCF7_Submission $submission ) {
 	$service = WPCF7_Stripe::get_instance();
 
 	if ( ! $service->is_active() ) {
@@ -197,10 +197,11 @@ function wpcf7_stripe_before_send_mail( $contact_form, &$abort, $submission ) {
 /**
  * Returns payment link URL.
  *
- * @param string $pi_id Payment Intent ID.
+ * @param  string  $pi_id Payment Intent ID.
+ *
  * @return string The URL.
  */
-function wpcf7_stripe_get_payment_link( $pi_id ) {
+function wpcf7_stripe_get_payment_link( string $pi_id ) {
 	return sprintf(
 		'https://dashboard.stripe.com/payments/%s',
 		urlencode( $pi_id )
@@ -217,7 +218,7 @@ add_filter(
 /**
  * Registers the [_stripe_payment_link] special mail-tag.
  */
-function wpcf7_stripe_smt( $output, $tag_name, $html, $mail_tag = null ) {
+function wpcf7_stripe_smt( $output, string $tag_name, $html, $mail_tag = null ) {
 	if ( '_stripe_payment_link' === $tag_name ) {
 		$submission = WPCF7_Submission::get_instance();
 
@@ -241,7 +242,7 @@ add_filter(
 /**
  * Adds Stripe-related meta data to Flamingo Inbound Message parameters.
  */
-function wpcf7_stripe_add_flamingo_inbound_message_params( $args ) {
+function wpcf7_stripe_add_flamingo_inbound_message_params( array $args ) {
 	$submission = WPCF7_Submission::get_instance();
 
 	$pi_id = $submission->pull( 'payment_intent' );
@@ -288,7 +289,7 @@ function wpcf7_add_form_tag_stripe() {
  *
  * @return string HTML content that replaces a stripe form-tag.
  */
-function wpcf7_stripe_form_tag_handler( $tag ) {
+function wpcf7_stripe_form_tag_handler( \WPCF7_FormTag $tag ): string {
 	$card_element = sprintf(
 		'<div %s></div>',
 		wpcf7_format_atts( array(

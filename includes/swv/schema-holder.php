@@ -2,7 +2,7 @@
 
 trait WPCF7_SWV_SchemaHolder {
 
-	protected $schema;
+	protected WPCF7_SWV_Schema $schema;
 
 
 	/**
@@ -10,7 +10,7 @@ trait WPCF7_SWV_SchemaHolder {
 	 *
 	 * @return WPCF7_SWV_Schema The schema object.
 	 */
-	public function get_schema() {
+	public function get_schema(): WPCF7_SWV_Schema {
 		if ( isset( $this->schema ) ) {
 			return $this->schema;
 		}

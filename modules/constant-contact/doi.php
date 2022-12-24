@@ -48,7 +48,7 @@ function wpcf7_constant_contact_doi_default_optin_callback( $properties ) {
 /**
  * Default email_callback function.
  */
-function wpcf7_constant_contact_doi_default_email_callback( $args ) {
+function wpcf7_constant_contact_doi_default_email_callback( array $args ) {
 	if ( ! isset( $args['token'] ) or ! isset( $args['email_to'] ) ) {
 		return;
 	}

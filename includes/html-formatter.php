@@ -107,10 +107,11 @@ class WPCF7_HTMLFormatter {
 	 * Separates the given text into chunks of HTML. Each chunk must be an
 	 * associative array that includes 'position', 'type', and 'content' keys.
 	 *
-	 * @param string $input Text to be separated into chunks.
+	 * @param  string  $input Text to be separated into chunks.
+	 *
 	 * @return iterable Iterable of chunks.
 	 */
-	public function separate_into_chunks( $input ) {
+	public function separate_into_chunks( string $input ) {
 		$input_bytelength = strlen( $input );
 		$position = 0;
 
@@ -175,10 +176,11 @@ class WPCF7_HTMLFormatter {
 	 * Normalizes content in each chunk. This may change the type and position
 	 * of the chunk.
 	 *
-	 * @param iterable $chunks The original chunks.
+	 * @param  iterable  $chunks The original chunks.
+	 *
 	 * @return iterable Normalized chunks.
 	 */
-	public function pre_format( $chunks ) {
+	public function pre_format( iterable $chunks ) {
 		$position = 0;
 
 		foreach ( $chunks as $chunk ) {
@@ -190,7 +192,7 @@ class WPCF7_HTMLFormatter {
 			);
 
 			if ( $chunk['type'] === self::start_tag ) {
-				list( $chunk['content'] ) =
+				[ $chunk['content'] ] =
 					self::normalize_start_tag( $chunk['content'] );
 
 				// Replace <br /> by a line break.
@@ -212,10 +214,11 @@ class WPCF7_HTMLFormatter {
 	/**
 	 * Concatenates neighboring text chunks to create a single chunk.
 	 *
-	 * @param iterable $chunks The original chunks.
+	 * @param  iterable  $chunks The original chunks.
+	 *
 	 * @return iterable Processed chunks.
 	 */
-	public function concatenate_texts( $chunks ) {
+	public function concatenate_texts( iterable $chunks ) {
 		$position = 0;
 		$text_left = null;
 
@@ -374,7 +377,7 @@ class WPCF7_HTMLFormatter {
 	 * @param string $tag A start tag.
 	 */
 	public function start_tag( $tag ) {
-		list( $tag, $tag_name ) = self::normalize_start_tag( $tag );
+		[ $tag, $tag_name ] = self::normalize_start_tag( $tag );
 
 		if ( in_array( $tag_name, self::p_child_elements ) ) {
 			if (

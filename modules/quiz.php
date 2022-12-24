@@ -18,7 +18,7 @@ function wpcf7_add_form_tag_quiz() {
 	);
 }
 
-function wpcf7_quiz_form_tag_handler( $tag ) {
+function wpcf7_quiz_form_tag_handler( \WPCF7_FormTag $tag ) {
 	if ( empty( $tag->name ) ) {
 		return '';
 	}

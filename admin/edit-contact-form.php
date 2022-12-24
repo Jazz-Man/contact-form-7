@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @var \WPCF7_ContactForm $post
+ * @var int $post_id
+ */
 // don't load directly
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );

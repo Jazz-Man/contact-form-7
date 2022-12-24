@@ -28,7 +28,7 @@ function wpcf7_akismet_register_service() {
 
 add_filter( 'wpcf7_spam', 'wpcf7_akismet', 10, 2 );
 
-function wpcf7_akismet( $spam, $submission ) {
+function wpcf7_akismet( bool $spam, \WPCF7_Submission $submission ) {
 	if ( $spam ) {
 		return $spam;
 	}
@@ -277,7 +277,7 @@ add_filter(
 	10, 2
 );
 
-function wpcf7_akismet_default_template( $template, $prop ) {
+function wpcf7_akismet_default_template( string $template, string $prop ): string {
 	if ( ! wpcf7_akismet_is_available() ) {
 		return $template;
 	}

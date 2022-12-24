@@ -3,12 +3,13 @@
 /**
  * Replaces double line breaks with paragraph elements.
  *
- * @param string $input The text which has to be formatted.
- * @param bool $br Optional. If set, this will convert all remaining
+ * @param  string  $input The text which has to be formatted.
+ * @param  bool  $br Optional. If set, this will convert all remaining
  *             line breaks after paragraphing. Default true.
+ *
  * @return string Text which has been converted into correct paragraph tags.
  */
-function wpcf7_autop( $input, $br = true ) {
+function wpcf7_autop( string $input, bool $br = true ): string {
 	$formatter = new WPCF7_HTMLFormatter( array(
 		'auto_br' => $br,
 	) );
@@ -35,10 +36,11 @@ function wpcf7_autop_preserve_newline_callback( $matches ) {
 /**
  * Sanitizes the query variables.
  *
- * @param string $text Query variable.
+ * @param  string  $text Query variable.
+ *
  * @return string Text sanitized.
  */
-function wpcf7_sanitize_query_var( $text ) {
+function wpcf7_sanitize_query_var( string $text ) {
 	$text = wp_unslash( $text );
 	$text = wp_check_invalid_utf8( $text );
 
@@ -61,7 +63,7 @@ function wpcf7_sanitize_query_var( $text ) {
  * @param string $text Input text.
  * @return string Processed output.
  */
-function wpcf7_strip_quote( $text ) {
+function wpcf7_strip_quote( string $text ) {
 	$text = trim( $text );
 
 	if ( preg_match( '/^"(.*)"$/s', $text, $matches ) ) {
@@ -101,11 +103,12 @@ function wpcf7_strip_quote_deep( $input ) {
 /**
  * Normalizes newline characters.
  *
- * @param string $text Input text.
- * @param string $to Optional. The newline character that is used in the output.
+ * @param  string  $text Input text.
+ * @param  string  $to Optional. The newline character that is used in the output.
+ *
  * @return string Normalized text.
  */
-function wpcf7_normalize_newline( $text, $to = "\n" ) {
+function wpcf7_normalize_newline( string $text, string $to = "\n" ) {
 	if ( ! is_string( $text ) ) {
 		return $text;
 	}
@@ -146,10 +149,11 @@ function wpcf7_normalize_newline_deep( $input, $to = "\n" ) {
 /**
  * Strips newline characters.
  *
- * @param string $text Input text.
+ * @param  string  $text Input text.
+ *
  * @return string Processed one-line text.
  */
-function wpcf7_strip_newline( $text ) {
+function wpcf7_strip_newline( string $text ) {
 	$text = (string) $text;
 	$text = str_replace( array( "\r", "\n" ), '', $text );
 	return trim( $text );
@@ -159,11 +163,12 @@ function wpcf7_strip_newline( $text ) {
 /**
  * Canonicalizes text.
  *
- * @param string $text Input text.
+ * @param  string  $text Input text.
  * @param string|array|object $args Options.
+ *
  * @return string Canonicalized text.
  */
-function wpcf7_canonicalize( $text, $args = '' ) {
+function wpcf7_canonicalize( string $text, $args = '' ) {
 	// for back-compat
 	if ( is_string( $args ) and '' !== $args
 	and false === strpos( $args, '=' ) ) {
@@ -226,22 +231,23 @@ function wpcf7_canonicalize( $text, $args = '' ) {
 /**
  * Sanitizes Contact Form 7's form unit-tag.
  *
- * @param string $tag Unit-tag.
+ * @param  string  $tag Unit-tag.
+ *
  * @return string Sanitized unit-tag.
  */
-function wpcf7_sanitize_unit_tag( $tag ) {
-	$tag = preg_replace( '/[^A-Za-z0-9_-]/', '', $tag );
-	return $tag;
+function wpcf7_sanitize_unit_tag( string $tag ): string {
+	return preg_replace( '/[^A-Za-z0-9_-]/', '', $tag );
 }
 
 
 /**
  * Converts a file name to one that is not executable as a script.
  *
- * @param string $filename File name.
+ * @param  string  $filename File name.
+ *
  * @return string Converted file name.
  */
-function wpcf7_antiscript_file_name( $filename ) {
+function wpcf7_antiscript_file_name( string $filename ): string {
 	$filename = wp_basename( $filename );
 
 	$filename = preg_replace( '/[\r\n\t -]+/', '-', $filename );
@@ -304,9 +310,7 @@ function wpcf7_mask_password( $text, $right = 0, $left = 0 ) {
 	$left_unmasked = $left ? substr( $text, 0, $left ) : '';
 	$right_unmasked = $right ? substr( $text, -1 * $right ) : '';
 
-	$text = $left_unmasked . $masked . $right_unmasked;
-
-	return $text;
+	return $left_unmasked . $masked . $right_unmasked;
 }
 
 

@@ -7,28 +7,28 @@ class WPCF7_Submission {
 
 	use WPCF7_PocketHolder;
 
-	private static $instance;
+	private static ?WPCF7_Submission $instance;
 
-	private $contact_form;
-	private $status = 'init';
-	private $posted_data = array();
+	private WPCF7_ContactForm $contact_form;
+	private string $status = 'init';
+	private array $posted_data = array();
 	private $posted_data_hash = null;
 	private $skip_spam_check = false;
 	private $uploaded_files = array();
 	private $extra_attachments = array();
-	private $skip_mail = false;
-	private $response = '';
-	private $invalid_fields = array();
-	private $meta = array();
+	private bool $skip_mail = false;
+	private string $response = '';
+	private array $invalid_fields = array();
+	private array $meta = array();
 	private $consent = array();
 	private $spam_log = array();
-	private $result_props = array();
+	private array $result_props = array();
 
 
 	/**
 	 * Returns the singleton instance of this class.
 	 */
-	public static function get_instance( $contact_form = null, $args = '' ) {
+	public static function get_instance( $contact_form = null, $args = '' ): ?WPCF7_Submission {
 		if ( $contact_form instanceof WPCF7_ContactForm ) {
 			if ( empty( self::$instance ) ) {
 				self::$instance = new self( $contact_form, $args );
@@ -50,7 +50,7 @@ class WPCF7_Submission {
 	/**
 	 * Returns true if this submission is created via WP REST API.
 	 */
-	public static function is_restful() {
+	public static function is_restful(): bool {
 		return defined( 'REST_REQUEST' ) && REST_REQUEST;
 	}
 
@@ -135,7 +135,7 @@ class WPCF7_Submission {
 	/**
 	 * Returns the current status property.
 	 */
-	public function get_status() {
+	public function get_status(): string {
 		return $this->status;
 	}
 
@@ -145,7 +145,7 @@ class WPCF7_Submission {
 	 *
 	 * @param string $status The status.
 	 */
-	public function set_status( $status ) {
+	public function set_status( string $status ): bool {
 		if ( preg_match( '/^[a-z][0-9a-z_]+$/', $status ) ) {
 			$this->status = $status;
 			return true;
@@ -161,7 +161,7 @@ class WPCF7_Submission {
 	 *
 	 * @param string $status The status to compare.
 	 */
-	public function is( $status ) {
+	public function is( string $status ): bool {
 		return $this->status === $status;
 	}
 
@@ -171,7 +171,7 @@ class WPCF7_Submission {
 	 *
 	 * @return array Submission result properties.
 	 */
-	public function get_result() {
+	public function get_result(): array {
 		$result = array_merge( $this->result_props, array(
 			'status' => $this->get_status(),
 			'message' => $this->get_response(),
@@ -193,9 +193,7 @@ class WPCF7_Submission {
 				break;
 		}
 
-		$result = apply_filters( 'wpcf7_submission_result', $result, $this );
-
-		return $result;
+		return apply_filters( 'wpcf7_submission_result', $result, $this );
 	}
 
 
@@ -205,7 +203,7 @@ class WPCF7_Submission {
 	 * @param string|array|object $args Value to add to result properties.
 	 * @return array Added result properties.
 	 */
-	public function add_result_props( $args = '' ) {
+	public function add_result_props( $args = '' ): array {
 		$args = wp_parse_args( $args, array() );
 
 		$this->result_props = array_merge( $this->result_props, $args );
@@ -219,7 +217,7 @@ class WPCF7_Submission {
 	 *
 	 * @return string The current response property value.
 	 */
-	public function get_response() {
+	public function get_response(): string {
 		return $this->response;
 	}
 
@@ -229,7 +227,7 @@ class WPCF7_Submission {
 	 *
 	 * @param string $response New response property value.
 	 */
-	public function set_response( $response ) {
+	public function set_response( string $response ): bool {
 		$this->response = $response;
 		return true;
 	}
@@ -240,7 +238,7 @@ class WPCF7_Submission {
 	 *
 	 * @return WPCF7_ContactForm A contact form object.
 	 */
-	public function get_contact_form() {
+	public function get_contact_form(): WPCF7_ContactForm {
 		return $this->contact_form;
 	}
 
@@ -252,7 +250,7 @@ class WPCF7_Submission {
 	 * @return array|bool An associative array of validation error
 	 *                    or false when no invalid field.
 	 */
-	public function get_invalid_field( $name ) {
+	public function get_invalid_field( string $name ) {
 		if ( isset( $this->invalid_fields[$name] ) ) {
 			return $this->invalid_fields[$name];
 		} else {
@@ -266,7 +264,7 @@ class WPCF7_Submission {
 	 *
 	 * @return array Invalid fields.
 	 */
-	public function get_invalid_fields() {
+	public function get_invalid_fields(): array {
 		return $this->invalid_fields;
 	}
 
@@ -278,7 +276,7 @@ class WPCF7_Submission {
 	 * @return string|null The meta information of the given name if it exists,
 	 *                     null otherwise.
 	 */
-	public function get_meta( $name ) {
+	public function get_meta( string $name ) {
 		if ( isset( $this->meta[$name] ) ) {
 			return $this->meta[$name];
 		}
@@ -288,7 +286,7 @@ class WPCF7_Submission {
 	/**
 	 * Collects meta information about this submission.
 	 */
-	private function setup_meta_data() {
+	private function setup_meta_data(): array {
 		$timestamp = time();
 
 		$remote_ip = $this->get_remote_ip_addr();
@@ -334,7 +332,7 @@ class WPCF7_Submission {
 	 * @return string|array|null The user input of the field, or array of all
 	 *                           fields values if no field name specified.
 	 */
-	public function get_posted_data( $name = '' ) {
+	public function get_posted_data( string $name = '' ) {
 		if ( ! empty( $name ) ) {
 			if ( isset( $this->posted_data[$name] ) ) {
 				return $this->posted_data[$name];
@@ -354,7 +352,7 @@ class WPCF7_Submission {
 	 * @return string The user input. If the input is an array,
 	 *                the first item in the array.
 	 */
-	public function get_posted_string( $name ) {
+	public function get_posted_string( string $name ) {
 		$data = $this->get_posted_data( $name );
 		$data = wpcf7_array_flatten( $data );
 
@@ -371,7 +369,7 @@ class WPCF7_Submission {
 	 * Constructs posted data property based on user input values.
 	 */
 	private function setup_posted_data() {
-		$posted_data = array_filter( (array) $_POST, function( $key ) {
+		$posted_data = array_filter( $_POST, function( $key ) {
 			return '_' !== substr( $key, 0, 1 );
 		}, ARRAY_FILTER_USE_KEY );
 
@@ -488,7 +486,7 @@ class WPCF7_Submission {
 	 *
 	 * @return float Float value rounded up to the next highest integer.
 	 */
-	private function posted_data_hash_tick() {
+	private function posted_data_hash_tick(): float {
 		return ceil( time() / ( HOUR_IN_SECONDS / 2 ) );
 	}
 
@@ -501,12 +499,12 @@ class WPCF7_Submission {
 	 *               posted_data_hash_tick() will be used.
 	 * @return string The hash.
 	 */
-	private function create_posted_data_hash( $tick = '' ) {
+	private function create_posted_data_hash( $tick = '' ): string {
 		if ( '' === $tick ) {
 			$tick = $this->posted_data_hash_tick();
 		}
 
-		$hash = wp_hash(
+		return wp_hash(
 			wpcf7_flat_join( array_merge(
 				array(
 					$tick,
@@ -517,8 +515,6 @@ class WPCF7_Submission {
 			) ),
 			'wpcf7_submission'
 		);
-
-		return $hash;
 	}
 
 
@@ -527,7 +523,7 @@ class WPCF7_Submission {
 	 *
 	 * @return string The current hash for the submission.
 	 */
-	public function get_posted_data_hash() {
+	public function get_posted_data_hash(): ?string {
 		return $this->posted_data_hash;
 	}
 

@@ -8,9 +8,9 @@
  * Wrapper function of WPCF7_ContactForm::get_instance().
  *
  * @param int|WP_Post $post Post ID or post object.
- * @return WPCF7_ContactForm Contact form object.
+ * @return WPCF7_ContactForm|null Contact form object.
  */
-function wpcf7_contact_form( $post ) {
+function wpcf7_contact_form( $post ): ?WPCF7_ContactForm {
 	return WPCF7_ContactForm::get_instance( $post );
 }
 
@@ -18,10 +18,11 @@ function wpcf7_contact_form( $post ) {
 /**
  * Searches for a contact form by an old unit ID.
  *
- * @param int $old_id Old unit ID.
+ * @param  int  $old_id Old unit ID.
+ *
  * @return WPCF7_ContactForm Contact form object.
  */
-function wpcf7_get_contact_form_by_old_id( $old_id ) {
+function wpcf7_get_contact_form_by_old_id( int $old_id ): WPCF7_ContactForm {
 	global $wpdb;
 
 	$q = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_old_cf7_unit_id'"
@@ -36,10 +37,11 @@ function wpcf7_get_contact_form_by_old_id( $old_id ) {
 /**
  * Searches for a contact form by title.
  *
- * @param string $title Title of contact form.
+ * @param  string  $title Title of contact form.
+ *
  * @return WPCF7_ContactForm|null Contact form object if found, null otherwise.
  */
-function wpcf7_get_contact_form_by_title( $title ) {
+function wpcf7_get_contact_form_by_title( string $title ): ?WPCF7_ContactForm {
 	$page = get_page_by_title( $title, OBJECT, WPCF7_ContactForm::post_type );
 
 	if ( $page ) {
@@ -55,17 +57,18 @@ function wpcf7_get_contact_form_by_title( $title ) {
  *
  * @return WPCF7_ContactForm Contact form object.
  */
-function wpcf7_get_current_contact_form() {
+function wpcf7_get_current_contact_form(): ?\WPCF7_ContactForm {
 	if ( $current = WPCF7_ContactForm::get_current() ) {
 		return $current;
 	}
+	return  null;
 }
 
 
 /**
  * Returns true if it is in the state that a non-Ajax submission is accepted.
  */
-function wpcf7_is_posted() {
+function wpcf7_is_posted(): bool {
 	if ( ! $contact_form = wpcf7_get_current_contact_form() ) {
 		return false;
 	}
@@ -78,10 +81,10 @@ function wpcf7_is_posted() {
  * Retrieves the user input value through a non-Ajax submission.
  *
  * @param string $name Name of form control.
- * @param string $default_value Optional default value.
- * @return string The user input value through the form-control.
+ * @param mixed $default_value Optional default value.
+ * @return mixed The user input value through the form-control.
  */
-function wpcf7_get_hangover( $name, $default_value = null ) {
+function wpcf7_get_hangover( string $name, $default_value = null ) {
 	if ( ! wpcf7_is_posted() ) {
 		return $default_value;
 	}
@@ -103,7 +106,7 @@ function wpcf7_get_hangover( $name, $default_value = null ) {
  * @param string $name Name of form control.
  * @return string Validation error message in a form of HTML snippet.
  */
-function wpcf7_get_validation_error( $name ) {
+function wpcf7_get_validation_error( string $name ) {
 	if ( ! $contact_form = wpcf7_get_current_contact_form() ) {
 		return '';
 	}
@@ -115,11 +118,12 @@ function wpcf7_get_validation_error( $name ) {
 /**
  * Returns a reference key to a validation error message.
  *
- * @param string $name Name of form control.
- * @param string $unit_tag Optional. Unit tag of the contact form.
+ * @param  string  $name Name of form control.
+ * @param  string  $unit_tag Optional. Unit tag of the contact form.
+ *
  * @return string Reference key code.
  */
-function wpcf7_get_validation_error_reference( $name, $unit_tag = '' ) {
+function wpcf7_get_validation_error_reference( string $name, string $unit_tag = '' ) {
 	if ( '' === $unit_tag ) {
 		$contact_form = wpcf7_get_current_contact_form();
 
@@ -143,7 +147,7 @@ function wpcf7_get_validation_error_reference( $name, $unit_tag = '' ) {
 /**
  * Retrieves a message for the given status.
  */
-function wpcf7_get_message( $status ) {
+function wpcf7_get_message( string $status ): string {
 	if ( ! $contact_form = wpcf7_get_current_contact_form() ) {
 		return '';
 	}
@@ -156,10 +160,11 @@ function wpcf7_get_message( $status ) {
  * Returns a class names list for a form-tag of the specified type.
  *
  * @param string $type Form-tag type.
- * @param string $default_classes Optional default classes.
+ * @param  string  $default_classes Optional default classes.
+ *
  * @return string Whitespace-separated list of class names.
  */
-function wpcf7_form_controls_class( $type, $default_classes = '' ) {
+function wpcf7_form_controls_class( string $type, string $default_classes = '' ) {
 	$type = trim( $type );
 	$default_classes = array_filter( explode( ' ', $default_classes ) );
 

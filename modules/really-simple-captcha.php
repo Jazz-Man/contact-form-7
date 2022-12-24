@@ -29,7 +29,7 @@ function wpcf7_add_form_tag_captcha() {
 	);
 }
 
-function wpcf7_captchac_form_tag_handler( $tag ) {
+function wpcf7_captchac_form_tag_handler( \WPCF7_FormTag $tag ) {
 	if ( ! class_exists( 'ReallySimpleCaptcha' ) ) {
 		$error = sprintf(
 			/* translators: %s: link labeled 'Really Simple CAPTCHA' */

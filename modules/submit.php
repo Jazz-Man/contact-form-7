@@ -11,7 +11,7 @@ function wpcf7_add_form_tag_submit() {
 	wpcf7_add_form_tag( 'submit', 'wpcf7_submit_form_tag_handler' );
 }
 
-function wpcf7_submit_form_tag_handler( $tag ) {
+function wpcf7_submit_form_tag_handler( \WPCF7_FormTag $tag ): string {
 	$class = wpcf7_form_controls_class( $tag->type, 'has-spinner' );
 
 	$atts = array();

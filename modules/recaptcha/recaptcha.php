@@ -124,7 +124,7 @@ add_filter( 'wpcf7_spam', 'wpcf7_recaptcha_verify_response', 9, 2 );
 /**
  * Verifies reCAPTCHA token on the server side.
  */
-function wpcf7_recaptcha_verify_response( $spam, $submission ) {
+function wpcf7_recaptcha_verify_response( bool $spam, \WPCF7_Submission $submission ) {
 	if ( $spam ) {
 		return $spam;
 	}

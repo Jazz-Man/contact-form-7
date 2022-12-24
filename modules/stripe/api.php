@@ -12,15 +12,15 @@ class WPCF7_Stripe_API {
 	const app_name = 'WordPress Contact Form 7';
 	const app_url = 'https://contactform7.com/stripe-integration/';
 
-	private $secret;
+	private string $secret;
 
 
 	/**
 	 * Constructor.
 	 *
-	 * @param string $secret Secret key.
+	 * @param  string  $secret Secret key.
 	 */
-	public function __construct( $secret ) {
+	public function __construct( string $secret ) {
 		$this->secret = $secret;
 	}
 
@@ -28,11 +28,11 @@ class WPCF7_Stripe_API {
 	/**
 	 * Sends a debug information for a remote request to the PHP error log.
 	 *
-	 * @param string $url URL to retrieve.
+	 * @param  string  $url URL to retrieve.
 	 * @param array $request Request arguments.
 	 * @param array|WP_Error $response The response or WP_Error on failure.
 	 */
-	private function log( $url, $request, $response ) {
+	private function log( string $url, $request, $response ) {
 		wpcf7_log_remote_request( $url, $request, $response );
 	}
 
@@ -44,7 +44,7 @@ class WPCF7_Stripe_API {
 	 *
 	 * @return array An associative array of headers.
 	 */
-	private function default_headers() {
+	private function default_headers(): array {
 		$app_info = array(
 			'name' => self::app_name,
 			'partner_id' => self::partner_id,

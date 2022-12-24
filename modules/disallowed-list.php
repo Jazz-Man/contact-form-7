@@ -2,7 +2,7 @@
 
 add_filter( 'wpcf7_spam', 'wpcf7_disallowed_list', 10, 2 );
 
-function wpcf7_disallowed_list( $spam, $submission ) {
+function wpcf7_disallowed_list( bool $spam, \WPCF7_Submission $submission ) {
 	if ( $spam ) {
 		return $spam;
 	}

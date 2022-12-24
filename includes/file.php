@@ -3,11 +3,12 @@
 /**
  * Validates uploaded files and moves them to the temporary directory.
  *
- * @param array $file An item of `$_FILES`.
+ * @param  array  $file An item of `$_FILES`.
  * @param string|array $args Optional. Arguments to control behavior.
+ *
  * @return array|WP_Error Array of file paths, or WP_Error if validation fails.
  */
-function wpcf7_unship_uploaded_file( $file, $args = '' ) {
+function wpcf7_unship_uploaded_file( array $file, $args = '' ) {
 	$args = wp_parse_args( $args, array(
 		'required' => false,
 		'filetypes' => '',
@@ -94,7 +95,7 @@ add_filter(
  * A wpcf7_messages filter callback that adds messages for
  * file-uploading fields.
  */
-function wpcf7_file_messages( $messages ) {
+function wpcf7_file_messages( array $messages ): array {
 	return array_merge( $messages, array(
 		'upload_failed' => array(
 			'description' => __( "Uploading a file fails for any reason", 'contact-form-7' ),
@@ -261,7 +262,7 @@ function wpcf7_init_uploads() {
 		$htaccess_file = path_join( $dir, '.htaccess' );
 
 		if ( file_exists( $htaccess_file ) ) {
-			list( $first_line_comment ) = (array) file(
+			[ $first_line_comment ] = (array) file(
 				$htaccess_file,
 				FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES
 			);

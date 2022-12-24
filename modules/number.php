@@ -18,7 +18,7 @@ function wpcf7_add_form_tag_number() {
 	);
 }
 
-function wpcf7_number_form_tag_handler( $tag ) {
+function wpcf7_number_form_tag_handler( \WPCF7_FormTag $tag ): string {
 	if ( empty( $tag->name ) ) {
 		return '';
 	}
@@ -108,7 +108,7 @@ add_action(
 	10, 2
 );
 
-function wpcf7_swv_add_number_rules( $schema, $contact_form ) {
+function wpcf7_swv_add_number_rules( \WPCF7_SWV_Schema $schema, \WPCF7_ContactForm $contact_form ) {
 	$tags = $contact_form->scan_form_tags( array(
 		'basetype' => array( 'number', 'range' ),
 	) );

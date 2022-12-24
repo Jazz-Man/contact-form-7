@@ -34,7 +34,7 @@ add_action( 'wpcf7_submit', 'wpcf7_constant_contact_submit', 10, 2 );
  * Callback to the wpcf7_submit action hook. Creates a contact
  * based on the submission.
  */
-function wpcf7_constant_contact_submit( $contact_form, $result ) {
+function wpcf7_constant_contact_submit( \WPCF7_ContactForm $contact_form, array $result ) {
 	$service = WPCF7_ConstantContact::get_instance();
 
 	if ( ! $service->is_active() ) {

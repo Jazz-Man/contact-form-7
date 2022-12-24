@@ -9,7 +9,7 @@ add_filter(
 /**
  * Registers the constant_contact contact form property.
  */
-function wpcf7_constant_contact_register_property( $properties, $contact_form ) {
+function wpcf7_constant_contact_register_property( array $properties, \WPCF7_ContactForm $contact_form ) {
 	$service = WPCF7_ConstantContact::get_instance();
 
 	if ( $service->is_active() ) {
@@ -104,7 +104,7 @@ add_action(
 /**
  * Saves the constant_contact property value.
  */
-function wpcf7_constant_contact_save_contact_form( $contact_form ) {
+function wpcf7_constant_contact_save_contact_form( \WPCF7_ContactForm $contact_form ) {
 	$service = WPCF7_ConstantContact::get_instance();
 
 	if ( ! $service->is_active() ) {
@@ -138,7 +138,7 @@ add_filter(
 /**
  * Builds the editor panel for the constant_contact property.
  */
-function wpcf7_constant_contact_editor_panels( $panels ) {
+function wpcf7_constant_contact_editor_panels( array $panels ) {
 	$service = WPCF7_ConstantContact::get_instance();
 
 	if ( ! $service->is_active() ) {

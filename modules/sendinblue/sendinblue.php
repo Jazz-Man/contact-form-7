@@ -30,7 +30,7 @@ add_action( 'wpcf7_submit', 'wpcf7_sendinblue_submit', 10, 2 );
  * Callback to the wpcf7_submit action hook. Creates a contact
  * based on the submission.
  */
-function wpcf7_sendinblue_submit( $contact_form, $result ) {
+function wpcf7_sendinblue_submit( \WPCF7_ContactForm $contact_form, array $result ) {
 	if ( $contact_form->in_demo_mode() ) {
 		return;
 	}
@@ -167,7 +167,7 @@ function wpcf7_sendinblue_submit( $contact_form, $result ) {
  *
  * @return array Sendinblue contact parameters.
  */
-function wpcf7_sendinblue_collect_parameters() {
+function wpcf7_sendinblue_collect_parameters(): array {
 	$params = array();
 
 	$submission = WPCF7_Submission::get_instance();

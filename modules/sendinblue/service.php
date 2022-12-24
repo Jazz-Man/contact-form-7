@@ -7,10 +7,10 @@ if ( ! class_exists( 'WPCF7_Service' ) ) {
 class WPCF7_Sendinblue extends WPCF7_Service {
 	use WPCF7_Sendinblue_API;
 
-	private static $instance;
+	private static WPCF7_Sendinblue $instance;
 	private $api_key;
 
-	public static function get_instance() {
+	public static function get_instance(): WPCF7_Sendinblue {
 		if ( empty( self::$instance ) ) {
 			self::$instance = new self;
 		}
@@ -38,11 +38,8 @@ class WPCF7_Sendinblue extends WPCF7_Service {
 		return $this->api_key;
 	}
 
-	public function get_categories() {
+	public function get_categories():?array {
 		return array( 'email_marketing' );
-	}
-
-	public function icon() {
 	}
 
 	public function link() {

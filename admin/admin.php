@@ -75,7 +75,7 @@ function wpcf7_admin_menu() {
 }
 
 
-function wpcf7_admin_menu_change_notice( $menu_slug = '' ) {
+function wpcf7_admin_menu_change_notice( string $menu_slug = '' ): string {
 	$counts = apply_filters( 'wpcf7_admin_menu_change_notice',
 		array(
 			'wpcf7' => 0,

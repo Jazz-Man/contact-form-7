@@ -3,9 +3,9 @@
 class WPCF7_ConstantContact_ContactPostRequest {
 
 	private $email_address;
-	private $first_name;
-	private $last_name;
-	private $job_title;
+	private ?string $first_name;
+	private ?string $last_name;
+	private ?string $job_title;
 	private $company_name;
 	private $create_source;
 	private $birthday_month;
@@ -96,12 +96,12 @@ class WPCF7_ConstantContact_ContactPostRequest {
 		}
 	}
 
-	public function is_valid() {
+	public function is_valid(): bool {
 		return $this->create_source
 			&& ( $this->email_address || $this->first_name || $this->last_name );
 	}
 
-	public function to_array() {
+	public function to_array(): array {
 		$output = array(
 			'email_address' => $this->email_address,
 			'first_name' => $this->first_name,
@@ -150,7 +150,7 @@ class WPCF7_ConstantContact_ContactPostRequest {
 		);
 	}
 
-	public function set_first_name( $first_name ) {
+	public function set_first_name( string $first_name ) {
 		$first_name = trim( $first_name );
 
 		if ( empty( $first_name )
@@ -161,7 +161,7 @@ class WPCF7_ConstantContact_ContactPostRequest {
 		return $this->first_name = $first_name;
 	}
 
-	public function set_last_name( $last_name ) {
+	public function set_last_name( string $last_name ) {
 		$last_name = trim( $last_name );
 
 		if ( empty( $last_name )
@@ -172,7 +172,7 @@ class WPCF7_ConstantContact_ContactPostRequest {
 		return $this->last_name = $last_name;
 	}
 
-	public function set_job_title( $job_title ) {
+	public function set_job_title( string $job_title ) {
 		$job_title = trim( $job_title );
 
 		if ( empty( $job_title )

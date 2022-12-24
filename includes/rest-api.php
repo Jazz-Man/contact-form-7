@@ -446,7 +446,7 @@ class WPCF7_REST_Controller {
 		return rest_ensure_response( $response );
 	}
 
-	private function get_properties( WPCF7_ContactForm $contact_form ) {
+	private function get_properties( WPCF7_ContactForm $contact_form ): array {
 		$properties = $contact_form->get_properties();
 
 		$properties['form'] = array(

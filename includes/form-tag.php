@@ -34,7 +34,7 @@ class WPCF7_FormTag implements ArrayAccess {
 	/**
 	 * Returns true if the type has a trailing asterisk.
 	 */
-	public function is_required() {
+	public function is_required(): bool {
 		return ( '*' === substr( $this->type, -1 ) );
 	}
 
@@ -42,7 +42,7 @@ class WPCF7_FormTag implements ArrayAccess {
 	/**
 	 * Returns true if the form-tag has a specified option.
 	 */
-	public function has_option( $option_name ) {
+	public function has_option( string $option_name ): bool {
 		$pattern = sprintf( '/^%s(:.+)?$/i', preg_quote( $option_name, '/' ) );
 		return (bool) preg_grep( $pattern, $this->options );
 	}
@@ -51,16 +51,17 @@ class WPCF7_FormTag implements ArrayAccess {
 	/**
 	 * Retrieves option values with the specified option name.
 	 *
-	 * @param string $option_name Option name.
-	 * @param string $pattern Optional. A regular expression pattern or one of
+	 * @param  string  $option_name Option name.
+	 * @param  string  $pattern Optional. A regular expression pattern or one of
 	 *               the keys of preset patterns. If specified, only options
 	 *               whose value part matches this pattern will be returned.
-	 * @param bool $single Optional. If true, only the first matching option
+	 * @param  bool  $single Optional. If true, only the first matching option
 	 *             will be returned. Default false.
+	 *
 	 * @return string|array|bool The option value or an array of option values.
 	 *                           False if there is no option matches the pattern.
 	 */
-	public function get_option( $option_name, $pattern = '', $single = false ) {
+	public function get_option( string $option_name, string $pattern = '', bool $single = false ) {
 		$preset_patterns = array(
 			'date' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
 			'int' => '[0-9]+',

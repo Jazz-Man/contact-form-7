@@ -12,7 +12,7 @@ function wpcf7_add_form_tag_hidden() {
 	);
 }
 
-function wpcf7_hidden_form_tag_handler( $tag ) {
+function wpcf7_hidden_form_tag_handler( \WPCF7_FormTag $tag ): string {
 	if ( empty( $tag->name ) ) {
 		return '';
 	}

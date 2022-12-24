@@ -139,7 +139,7 @@ abstract class WPCF7_SWV_Rule {
 	 *
 	 * @param array $context Context.
 	 */
-	public function matches( $context ) {
+	public function matches( array $context ) {
 		$field = $this->get_property( 'field' );
 
 		if ( ! empty( $context['field'] ) ) {
@@ -178,7 +178,7 @@ abstract class WPCF7_SWV_Rule {
 	 * @param string $name Property name.
 	 * @return mixed Property value.
 	 */
-	public function get_property( $name ) {
+	public function get_property( string $name ) {
 		if ( isset( $this->properties[$name] ) ) {
 			return $this->properties[$name];
 		}

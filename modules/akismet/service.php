@@ -6,10 +6,10 @@ if ( ! class_exists( 'WPCF7_Service' ) ) {
 
 class WPCF7_Akismet extends WPCF7_Service {
 
-	private static $instance;
+	private static WPCF7_Akismet $instance;
 
 
-	public static function get_instance() {
+	public static function get_instance(): WPCF7_Akismet {
 		if ( empty( self::$instance ) ) {
 			self::$instance = new self;
 		}
@@ -28,13 +28,10 @@ class WPCF7_Akismet extends WPCF7_Service {
 	}
 
 
-	public function get_categories() {
+	public function get_categories(): ?array {
 		return array( 'spam_protection' );
 	}
 
-
-	public function icon() {
-	}
 
 
 	public function link() {

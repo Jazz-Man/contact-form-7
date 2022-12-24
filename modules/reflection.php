@@ -13,7 +13,7 @@ function wpcf7_add_form_tag_reflection() {
 	);
 }
 
-function wpcf7_reflection_form_tag_handler( $tag ) {
+function wpcf7_reflection_form_tag_handler( \WPCF7_FormTag $tag ): string {
 	if ( empty( $tag->name ) ) {
 		return '';
 	}

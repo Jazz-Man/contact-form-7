@@ -2,8 +2,9 @@
 
 /**
  * Wrapper function of WPCF7_FormTagsManager::add().
+ *
  */
-function wpcf7_add_form_tag( $tag_types, $callback, $features = '' ) {
+function wpcf7_add_form_tag( $tag_types, callable $callback, $features = '' ) {
 	$manager = WPCF7_FormTagsManager::get_instance();
 
 	return $manager->add( $tag_types, $callback, $features );
@@ -102,7 +103,7 @@ class WPCF7_FormTagsManager {
 	 * @param string|array $features Optional. Features a form-tag
 	 *                     in this type supports.
 	 */
-	public function add( $tag_types, $callback, $features = '' ) {
+	public function add( $tag_types, callable $callback, $features = '' ) {
 		if ( ! is_callable( $callback ) ) {
 			return;
 		}
@@ -131,7 +132,7 @@ class WPCF7_FormTagsManager {
 	/**
 	 * Returns true if the given tag type exists.
 	 */
-	public function tag_type_exists( $tag_type ) {
+	public function tag_type_exists( string $tag_type ): bool {
 		return isset( $this->tag_types[$tag_type] );
 	}
 
@@ -139,12 +140,13 @@ class WPCF7_FormTagsManager {
 	/**
 	 * Returns true if the tag type supports the features.
 	 *
-	 * @param string $tag_type The name of the form-tag type.
+	 * @param  string  $tag_type The name of the form-tag type.
 	 * @param array|string $features The feature to check or an array of features.
+	 *
 	 * @return bool True if the form-tag type supports at least one of
 	 *              the given features, false otherwise.
 	 */
-	public function tag_type_supports( $tag_type, $features ) {
+	public function tag_type_supports( string $tag_type, $features ) {
 		$features = array_filter( (array) $features );
 
 		if ( isset( $this->tag_types[$tag_type]['features'] ) ) {
@@ -163,12 +165,13 @@ class WPCF7_FormTagsManager {
 	 *
 	 * @param array|string $features Optional. The feature to check or
 	 *                     an array of features. Default empty array.
-	 * @param bool $invert Optional. If this value is true, returns form-tag
+	 * @param  bool  $invert Optional. If this value is true, returns form-tag
 	 *             types that do not support the given features. Default false.
+	 *
 	 * @return array An array of form-tag types. If the $features param is empty,
 	 *               returns all form-tag types that have been registered.
 	 */
-	public function collect_tag_types( $features = array(), $invert = false ) {
+	public function collect_tag_types( $features = array(), bool $invert = false ) {
 		$tag_types = array_keys( $this->tag_types );
 
 		if ( empty( $features ) ) {
@@ -191,7 +194,7 @@ class WPCF7_FormTagsManager {
 	/**
 	 * Sanitizes the form-tag type name.
 	 */
-	private function sanitize_tag_type( $tag_type ) {
+	private function sanitize_tag_type( string $tag_type ): string {
 		$tag_type = preg_replace( '/[^a-zA-Z0-9_*]+/', '_', $tag_type );
 		$tag_type = rtrim( $tag_type, '_' );
 		$tag_type = strtolower( $tag_type );
@@ -202,7 +205,7 @@ class WPCF7_FormTagsManager {
 	/**
 	 * Deregisters the form-tag type.
 	 */
-	public function remove( $tag_type ) {
+	public function remove( string $tag_type ) {
 		unset( $this->tag_types[$tag_type] );
 	}
 
@@ -210,25 +213,23 @@ class WPCF7_FormTagsManager {
 	/**
 	 * Normalizes the text content that includes form-tags.
 	 */
-	public function normalize( $content ) {
+	public function normalize( string $content ) {
 		if ( empty( $this->tag_types ) ) {
 			return $content;
 		}
 
-		$content = preg_replace_callback(
+		return preg_replace_callback(
 			'/' . $this->tag_regex() . '/s',
 			array( $this, 'normalize_callback' ),
 			$content
 		);
-
-		return $content;
 	}
 
 
 	/**
 	 * The callback function used within normalize().
 	 */
-	private function normalize_callback( $matches ) {
+	private function normalize_callback( array $matches ) {
 		// allow [[foo]] syntax for escaping a tag
 		if ( $matches[1] == '['
 		and $matches[6] == ']' ) {
@@ -257,14 +258,14 @@ class WPCF7_FormTagsManager {
 	/**
 	 * Replace all form-tags in the given text with placeholders.
 	 */
-	public function replace_with_placeholders( $content ) {
+	public function replace_with_placeholders( string $content ) {
 		if ( empty( $this->tag_types ) ) {
 			return $content;
 		}
 
 		$this->placeholders = array();
 
-		$callback = function ( $matches ) {
+		$callback = function ( array $matches ) {
 			// Allow [[foo]] syntax for escaping a tag.
 			if ( '[' === $matches[1] and ']' === $matches[6] ) {
 				return $matches[0];
@@ -290,7 +291,7 @@ class WPCF7_FormTagsManager {
 				sha1( $tag )
 			);
 
-			list( $placeholder ) =
+			[ $placeholder ] =
 				WPCF7_HTMLFormatter::normalize_start_tag( $placeholder );
 
 			$this->placeholders[$placeholder] = $tag;
@@ -309,7 +310,7 @@ class WPCF7_FormTagsManager {
 	/**
 	 * Replace placeholders in the given text with original form-tags.
 	 */
-	public function restore_from_placeholders( $content ) {
+	public function restore_from_placeholders( string $content ) {
 		return str_replace(
 			array_keys( $this->placeholders ),
 			array_values( $this->placeholders ),
@@ -324,7 +325,7 @@ class WPCF7_FormTagsManager {
 	 * @param string $content The text content including form-tags.
 	 * @return string The result of replacements.
 	 */
-	public function replace_all( $content ) {
+	public function replace_all( string $content ) {
 		return $this->scan( $content, true );
 	}
 
@@ -338,7 +339,7 @@ class WPCF7_FormTagsManager {
 	 * @return array|string An array of scanned form-tags if $replace is false.
 	 *                      Otherwise text that scanned form-tags are replaced.
 	 */
-	public function scan( $content, $replace = false ) {
+	public function scan( string $content, bool $replace = false ) {
 		$this->scanned_tags = array();
 
 		if ( empty( $this->tag_types ) ) {
@@ -350,13 +351,11 @@ class WPCF7_FormTagsManager {
 		}
 
 		if ( $replace ) {
-			$content = preg_replace_callback(
+			return preg_replace_callback(
 				'/' . $this->tag_regex() . '/s',
 				array( $this, 'replace_callback' ),
 				$content
 			);
-
-			return $content;
 		} else {
 			preg_replace_callback(
 				'/' . $this->tag_regex() . '/s',
@@ -375,7 +374,7 @@ class WPCF7_FormTagsManager {
 	 * @param array|string $input The original form-tags collection.
 	 *                     If it is a string, scans form-tags from it.
 	 * @param array $cond The conditions that filtering will be based on.
-	 * @return array The filtered form-tags collection.
+	 * @return \WPCF7_FormTag[] The filtered form-tags collection.
 	 */
 	public function filter( $input, $cond ) {
 		if ( is_array( $input ) ) {
@@ -442,7 +441,7 @@ class WPCF7_FormTagsManager {
 	/**
 	 * Returns the regular expression for a form-tag.
 	 */
-	private function tag_regex() {
+	private function tag_regex(): string {
 		$tagnames = array_keys( $this->tag_types );
 		$tagregexp = implode( '|', array_map( 'preg_quote', $tagnames ) );
 
@@ -456,7 +455,7 @@ class WPCF7_FormTagsManager {
 	/**
 	 * The callback function for the form-tag replacement.
 	 */
-	private function replace_callback( $matches ) {
+	private function replace_callback( array $matches ) {
 		return $this->scan_callback( $matches, true );
 	}
 
@@ -464,7 +463,7 @@ class WPCF7_FormTagsManager {
 	/**
 	 * The callback function for the form-tag scanning.
 	 */
-	private function scan_callback( $matches, $replace = false ) {
+	private function scan_callback( array $matches, bool $replace = false ) {
 		// allow [[foo]] syntax for escaping a tag
 		if ( $matches[1] == '['
 		and $matches[6] == ']' ) {
@@ -564,7 +563,7 @@ class WPCF7_FormTagsManager {
 	 *                      if the input is in the correct syntax,
 	 *                      otherwise the input text itself.
 	 */
-	private function parse_atts( $text ) {
+	private function parse_atts( string $text ) {
 		$atts = array( 'options' => array(), 'values' => array() );
 		$text = preg_replace( "/[\x{00a0}\x{200b}]+/u", " ", $text );
 		$text = trim( $text );

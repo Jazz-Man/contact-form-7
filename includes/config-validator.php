@@ -33,7 +33,7 @@ class WPCF7_ConfigValidator {
 	/**
 	 * Returns a URL linking to the documentation page for the error type.
 	 */
-	public static function get_doc_link( $error_code = '' ) {
+	public static function get_doc_link( $error_code = '' ): string {
 		$url = __( 'https://contactform7.com/configuration-errors/',
 			'contact-form-7'
 		);
@@ -48,7 +48,7 @@ class WPCF7_ConfigValidator {
 	}
 
 
-	private $contact_form;
+	private WPCF7_ContactForm $contact_form;
 	private $errors = array();
 
 	public function __construct( WPCF7_ContactForm $contact_form ) {
@@ -59,7 +59,7 @@ class WPCF7_ConfigValidator {
 	/**
 	 * Returns the contact form object that is tied to this validator.
 	 */
-	public function contact_form() {
+	public function contact_form(): WPCF7_ContactForm {
 		return $this->contact_form;
 	}
 
@@ -312,7 +312,7 @@ class WPCF7_ConfigValidator {
 	 * Callback function for WPCF7_MailTaggedText. Replaces mail-tags with
 	 * the most conservative inputs.
 	 */
-	public function replace_mail_tags_with_minimum_input( $matches ) {
+	public function replace_mail_tags_with_minimum_input( array $matches ) {
 		// allow [[foo]] syntax for escaping a tag
 		if ( $matches[1] == '[' && $matches[4] == ']' ) {
 			return substr( $matches[0], 1, -1 );
@@ -596,7 +596,7 @@ class WPCF7_ConfigValidator {
 	 *
 	 * @link https://contactform7.com/configuration-errors/upload-filesize-overlimit
 	 */
-	public function detect_upload_filesize_overlimit( $section, $content ) {
+	public function detect_upload_filesize_overlimit( $section, $content ): bool {
 		$upload_max_filesize = ini_get( 'upload_max_filesize' );
 
 		if ( ! $upload_max_filesize ) {

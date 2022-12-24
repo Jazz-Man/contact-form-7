@@ -16,7 +16,7 @@ function wpcf7_add_form_tag_response() {
 	);
 }
 
-function wpcf7_response_form_tag_handler( $tag ) {
+function wpcf7_response_form_tag_handler( \WPCF7_FormTag $tag ) {
 	if ( $contact_form = wpcf7_get_current_contact_form() ) {
 		return $contact_form->form_response_output();
 	}

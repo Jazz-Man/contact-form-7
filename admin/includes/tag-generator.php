@@ -2,13 +2,13 @@
 
 class WPCF7_TagGenerator {
 
-	private static $instance;
+	private static WPCF7_TagGenerator $instance;
 
-	private $panels = array();
+	private array $panels = array();
 
 	private function __construct() {}
 
-	public static function get_instance() {
+	public static function get_instance(): WPCF7_TagGenerator {
 		if ( empty( self::$instance ) ) {
 			self::$instance = new self;
 		}
@@ -16,7 +16,7 @@ class WPCF7_TagGenerator {
 		return self::$instance;
 	}
 
-	public function add( $id, $title, $callback, $options = array() ) {
+	public function add( string $id, string $title, ?callable $callback, $options = array() ): bool {
 		$id = trim( $id );
 
 		if ( '' === $id
