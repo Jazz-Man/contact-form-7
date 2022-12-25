@@ -1,5 +1,7 @@
 <?php
 
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+
 add_filter(
     'wpcf7_pre_construct_contact_form_properties',
     'wpcf7_constant_contact_register_property',

@@ -1,10 +1,13 @@
 <?php
 
 /**
- * @var \WPCF7_ContactForm $post
+ * @var \JazzMan\ContactForm7\WPCF7_ContactForm $post
  * @var int                $post_id
  */
 // don't load directly
+use JazzMan\ContactForm7\Admin\WPCF7_Editor;
+use JazzMan\ContactForm7\Admin\WPCF7_TagGenerator;
+
 if (!defined('ABSPATH')) {
     exit('-1');
 }

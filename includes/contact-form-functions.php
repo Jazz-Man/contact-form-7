@@ -5,8 +5,11 @@
  * @param mixed $post
  */
 
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+use JazzMan\ContactForm7\WPCF7_Submission;
+
 /**
- * Wrapper function of WPCF7_ContactForm::get_instance().
+ * Wrapper function of JazzMan\ContactForm7\WPCF7_ContactForm::get_instance().
  *
  * @param int|WP_Post $post post ID or post object
  *
@@ -52,7 +55,7 @@ function wpcf7_get_contact_form_by_title(string $title): ?WPCF7_ContactForm {
 }
 
 /**
- * Wrapper function of WPCF7_ContactForm::get_current().
+ * Wrapper function of JazzMan\ContactForm7\WPCF7_ContactForm::get_current().
  *
  * @return WPCF7_ContactForm contact form object
  */

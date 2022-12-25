@@ -4,7 +4,12 @@
  *
  * @see https://contactform7.com/constant-contact-integration/
  */
-wpcf7_include_module_file('constant-contact/service.php');
+
+use JazzMan\ContactForm7\Integration\WPCF7_Integration;
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+use JazzMan\ContactForm7\WPCF7_Submission;
+
+wpcf7_include_module_file('constant-contact/WPCF7_ConstantContact.php');
 wpcf7_include_module_file('constant-contact/contact-post-request.php');
 wpcf7_include_module_file('constant-contact/contact-form-properties.php');
 wpcf7_include_module_file('constant-contact/doi.php');

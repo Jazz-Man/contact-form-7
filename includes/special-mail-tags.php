@@ -3,6 +3,10 @@
  ** Special Mail Tags
  ** https://contactform7.com/special-mail-tags/.
  */
+
+use JazzMan\ContactForm7\WPCF7_MailTag;
+use JazzMan\ContactForm7\WPCF7_Submission;
+
 add_filter('wpcf7_special_mail_tags', 'wpcf7_special_mail_tag', 10, 4);
 
 /**
@@ -11,7 +15,7 @@ add_filter('wpcf7_special_mail_tags', 'wpcf7_special_mail_tag', 10, 4);
  * @param null|string         $output   the string to be output
  * @param string              $name     the tag name of the special mail-tag
  * @param bool                $html     whether the mail-tag is used in an HTML content
- * @param null|\WPCF7_MailTag $mail_tag an object representation of the mail-tag
+ * @param null|WPCF7_MailTag $mail_tag an object representation of the mail-tag
  *
  * @return string output of the given special mail-tag
  */

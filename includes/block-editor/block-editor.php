@@ -1,5 +1,7 @@
 <?php
 
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+
 add_action('init', 'wpcf7_init_block_editor_assets', 10, 0);
 
 function wpcf7_init_block_editor_assets(): void {

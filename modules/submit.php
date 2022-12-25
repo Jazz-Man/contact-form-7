@@ -5,6 +5,10 @@
 
 /* form_tag handler */
 
+use JazzMan\ContactForm7\Admin\WPCF7_TagGenerator;
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+use JazzMan\ContactForm7\WPCF7_FormTag;
+
 add_action('wpcf7_init', 'wpcf7_add_form_tag_submit', 10, 0);
 
 function wpcf7_add_form_tag_submit(): void {
@@ -48,7 +52,7 @@ function wpcf7_add_tag_generator_submit(): void {
     );
 }
 
-function wpcf7_tag_generator_submit($contact_form, $args = ''): void {
+function wpcf7_tag_generator_submit( WPCF7_ContactForm $contact_form, $args = ''): void {
     $args = wp_parse_args($args, []);
 
     $description = __('Generate a form-tag for a submit button. For more details, see %s.', 'contact-form-7');

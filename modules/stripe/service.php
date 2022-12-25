@@ -1,10 +1,10 @@
 <?php
 
-if (!class_exists('WPCF7_Service')) {
-    return;
-}
+use JazzMan\ContactForm7\Integration\WPCF7_Service;
+use JazzMan\ContactForm7\WPCF7;
 
-class service extends WPCF7_Service {
+
+class WPCF7_Stripe extends WPCF7_Service {
     private static WPCF7_Stripe $instance;
 
     private ?array $api_keys;

@@ -1,6 +1,9 @@
 <?php
 
-require_once WPCF7_PLUGIN_DIR.'/includes/l10n.php';
+use JazzMan\ContactForm7\WPCF7;
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+
+require_once WPCF7_PLUGIN_DIR . '/includes/l10n.php';
 
 require_once WPCF7_PLUGIN_DIR.'/includes/capabilities.php';
 
@@ -8,11 +11,6 @@ require_once WPCF7_PLUGIN_DIR.'/includes/functions.php';
 
 require_once WPCF7_PLUGIN_DIR.'/includes/formatting.php';
 
-require_once WPCF7_PLUGIN_DIR.'/includes/pipe.php';
-
-require_once WPCF7_PLUGIN_DIR.'/includes/pocket-holder.php';
-
-require_once WPCF7_PLUGIN_DIR.'/includes/form-tag.php';
 
 require_once WPCF7_PLUGIN_DIR.'/includes/form-tags-manager.php';
 
@@ -24,8 +22,6 @@ require_once WPCF7_PLUGIN_DIR.'/includes/contact-form-functions.php';
 
 require_once WPCF7_PLUGIN_DIR.'/includes/contact-form-template.php';
 
-require_once WPCF7_PLUGIN_DIR.'/includes/contact-form.php';
-
 require_once WPCF7_PLUGIN_DIR.'/includes/mail.php';
 
 require_once WPCF7_PLUGIN_DIR.'/includes/special-mail-tags.php';
@@ -34,21 +30,11 @@ require_once WPCF7_PLUGIN_DIR.'/includes/file.php';
 
 require_once WPCF7_PLUGIN_DIR.'/includes/validation-functions.php';
 
-require_once WPCF7_PLUGIN_DIR.'/includes/validation.php';
-
-require_once WPCF7_PLUGIN_DIR.'/includes/submission.php';
-
 require_once WPCF7_PLUGIN_DIR.'/includes/upgrade.php';
-
-require_once WPCF7_PLUGIN_DIR.'/includes/integration.php';
-
-require_once WPCF7_PLUGIN_DIR.'/includes/config-validator.php';
 
 require_once WPCF7_PLUGIN_DIR.'/includes/rest-api.php';
 
 require_once WPCF7_PLUGIN_DIR.'/includes/block-editor/block-editor.php';
-
-require_once WPCF7_PLUGIN_DIR.'/includes/html-formatter.php';
 
 if (is_admin()) {
     require_once WPCF7_PLUGIN_DIR.'/admin/admin.php';
@@ -56,87 +42,6 @@ if (is_admin()) {
     require_once WPCF7_PLUGIN_DIR.'/includes/controller.php';
 }
 
-class WPCF7 {
-    /**
-     * Loads modules from the modules directory.
-     */
-    public static function load_modules(): void {
-        self::load_module('acceptance');
-        self::load_module('akismet');
-        self::load_module('checkbox');
-        self::load_module('constant-contact');
-        self::load_module('count');
-        self::load_module('date');
-        self::load_module('disallowed-list');
-        self::load_module('doi-helper');
-        self::load_module('file');
-        self::load_module('flamingo');
-        self::load_module('hidden');
-        self::load_module('listo');
-        self::load_module('number');
-        self::load_module('quiz');
-        self::load_module('really-simple-captcha');
-        self::load_module('recaptcha');
-        self::load_module('reflection');
-        self::load_module('response');
-        self::load_module('select');
-        self::load_module('sendinblue');
-        self::load_module('stripe');
-        self::load_module('submit');
-        self::load_module('text');
-        self::load_module('textarea');
-    }
-
-    /**
-     * Retrieves a named entry from the option array of Contact Form 7.
-     *
-     * @param string $name          array item key
-     * @param mixed  $default_value Optional. Default value to return if the entry
-     *                              does not exist. Default false.
-     *
-     * @return mixed Array value tied to the $name key. If nothing found,
-     *               the $default_value value will be returned.
-     */
-    public static function get_option($name, $default_value = false) {
-        $option = get_option('wpcf7');
-
-        if (false === $option) {
-            return $default_value;
-        }
-
-        if (isset($option[$name])) {
-            return $option[$name];
-        }
-
-        return $default_value;
-    }
-
-    /**
-     * Update an entry value on the option array of Contact Form 7.
-     *
-     * @param string $name  array item key
-     * @param mixed  $value option value
-     */
-    public static function update_option(string $name, $value): void {
-        $option = get_option('wpcf7');
-        $option = (false === $option) ? [] : (array) $option;
-        $option = array_merge($option, [$name => $value]);
-        update_option('wpcf7', $option);
-    }
-
-    /**
-     * Loads the specified module.
-     *
-     * @param string $mod name of module
-     *
-     * @return bool true on success, false on failure
-     */
-    protected static function load_module(string $mod) {
-        return false
-            || wpcf7_include_module_file($mod.'/'.$mod.'.php')
-            || wpcf7_include_module_file($mod.'.php');
-    }
-}
 
 add_action('plugins_loaded', 'wpcf7', 10, 0);
 

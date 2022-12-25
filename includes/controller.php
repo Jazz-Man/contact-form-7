@@ -2,6 +2,9 @@
 /**
  * Controller for front-end requests, scripts, and styles.
  */
+
+use JazzMan\ContactForm7\WPCF7_Submission;
+
 add_action(
     'parse_request',
     'wpcf7_control_init',

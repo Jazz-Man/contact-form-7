@@ -1,8 +1,7 @@
 <?php
 
-if (!class_exists('WPCF7_Service')) {
-    return;
-}
+use JazzMan\ContactForm7\Integration\WPCF7_Service;
+use JazzMan\ContactForm7\WPCF7;
 
 class WPCF7_Sendinblue extends WPCF7_Service {
     use WPCF7_Sendinblue_API;

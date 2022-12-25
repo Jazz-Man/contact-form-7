@@ -1,10 +1,12 @@
 <?php
 
+use JazzMan\ContactForm7\Admin\WPCF7_Contact_Form_List_Table;
+use JazzMan\ContactForm7\Admin\WPCF7_Help_Tabs;
+use JazzMan\ContactForm7\Integration\WPCF7_Integration;
+use JazzMan\ContactForm7\WPCF7_ConfigValidator;
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+
 require_once WPCF7_PLUGIN_DIR.'/admin/includes/admin-functions.php';
-
-require_once WPCF7_PLUGIN_DIR.'/admin/includes/help-tabs.php';
-
-require_once WPCF7_PLUGIN_DIR.'/admin/includes/tag-generator.php';
 
 require_once WPCF7_PLUGIN_DIR.'/admin/includes/welcome-panel.php';
 
@@ -175,8 +177,7 @@ function wpcf7_admin_enqueue_scripts($hook_suffix): void {
         ],
     ];
 
-    if ($post = wpcf7_get_current_contact_form()
-    && current_user_can('wpcf7_edit_contact_form', $post->id())
+    if (($post = wpcf7_get_current_contact_form()) && current_user_can('wpcf7_edit_contact_form', $post->id())
     && wpcf7_validate_configuration()) {
         $config_validator = new WPCF7_ConfigValidator($post);
         $config_validator->restore();
@@ -378,13 +379,9 @@ function wpcf7_load_contact_form_admin(): void {
     } else {
         $help_tabs->set_help_tabs('list');
 
-        if (!class_exists('WPCF7_Contact_Form_List_Table')) {
-            require_once WPCF7_PLUGIN_DIR.'/admin/includes/class-contact-forms-list-table.php';
-        }
-
         add_filter(
             'manage_'.$current_screen->id.'_columns',
-            ['WPCF7_Contact_Form_List_Table', 'define_columns'],
+            [WPCF7_Contact_Form_List_Table::class, 'define_columns'],
             10,
             0
         );

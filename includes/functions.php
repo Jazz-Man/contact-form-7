@@ -1,5 +1,7 @@
 <?php
 
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+
 /**
  * Returns path to a plugin file.
  *
@@ -153,7 +155,7 @@ function wpcf7_exclude_blank(array $input) {
  *
  * @return string comma-separated list
  */
-function wpcf7_flat_join($input, $args = '') {
+function wpcf7_flat_join($input, $args = ''): string {
     $args = wp_parse_args($args, [
         'separator' => ', ',
     ]);
@@ -320,7 +322,7 @@ function wpcf7_get_request_uri() {
  * Registers post types used for this plugin.
  */
 function wpcf7_register_post_types(): bool {
-    if (class_exists('WPCF7_ContactForm')) {
+    if (class_exists( WPCF7_ContactForm::class )) {
         WPCF7_ContactForm::register_post_type();
 
         return true;

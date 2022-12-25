@@ -1,5 +1,7 @@
 <?php
 
+use JazzMan\ContactForm7\Admin\WPCF7_TagGenerator;
+
 function wpcf7_current_action() {
     if (isset($_REQUEST['action']) && -1 != $_REQUEST['action']) {
         return $_REQUEST['action'];

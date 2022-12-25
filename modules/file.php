@@ -5,6 +5,13 @@
 
 /* form_tag handler */
 
+use JazzMan\ContactForm7\Admin\WPCF7_TagGenerator;
+use JazzMan\ContactForm7\Swv\WPCF7_SWV_Schema;
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+use JazzMan\ContactForm7\WPCF7_FormTag;
+use JazzMan\ContactForm7\WPCF7_MailTag;
+use JazzMan\ContactForm7\WPCF7_Submission;
+
 add_action('wpcf7_init', 'wpcf7_add_form_tag_file', 10, 0);
 
 function wpcf7_add_form_tag_file(): void {
@@ -114,7 +121,7 @@ function wpcf7_swv_add_file_rules(WPCF7_SWV_Schema $schema, WPCF7_ContactForm $c
 add_filter('wpcf7_mail_tag_replaced_file', 'wpcf7_file_mail_tag', 10, 4);
 add_filter('wpcf7_mail_tag_replaced_file*', 'wpcf7_file_mail_tag', 10, 4);
 
-function wpcf7_file_mail_tag($replaced, $submitted, $html, $mail_tag) {
+function wpcf7_file_mail_tag(?string $replaced, ?string $submitted, bool $html, WPCF7_MailTag $mail_tag): ?string {
     $submission = WPCF7_Submission::get_instance();
     $uploaded_files = $submission->uploaded_files();
     $name = $mail_tag->field_name();

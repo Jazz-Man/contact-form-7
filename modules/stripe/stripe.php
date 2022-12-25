@@ -4,6 +4,12 @@
  *
  * @see https://contactform7.com/stripe-integration/
  */
+
+use JazzMan\ContactForm7\Integration\WPCF7_Integration;
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+use JazzMan\ContactForm7\WPCF7_FormTag;
+use JazzMan\ContactForm7\WPCF7_Submission;
+
 wpcf7_include_module_file('stripe/service.php');
 wpcf7_include_module_file('stripe/api.php');
 
@@ -144,7 +150,7 @@ add_action(
  *
  * @param mixed $abort
  */
-function wpcf7_stripe_before_send_mail(WPCF7_ContactForm $contact_form, &$abort, WPCF7_Submission $submission): void {
+function wpcf7_stripe_before_send_mail(WPCF7_ContactForm $contact_form, bool &$abort, WPCF7_Submission $submission): void {
     $service = WPCF7_Stripe::get_instance();
 
     if (!$service->is_active()) {

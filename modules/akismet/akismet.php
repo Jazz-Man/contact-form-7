@@ -4,7 +4,11 @@
  *
  * @see https://akismet.com/development/api/
  */
-wpcf7_include_module_file('akismet/service.php');
+
+use JazzMan\ContactForm7\Integration\WPCF7_Integration;
+use JazzMan\ContactForm7\WPCF7_Submission;
+
+wpcf7_include_module_file('akismet/WPCF7_Akismet.php');
 
 add_action(
     'wpcf7_init',

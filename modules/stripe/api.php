@@ -5,7 +5,7 @@
  *
  * @see https://stripe.com/docs/api
  */
-class stripe_api {
+class WPCF7_Stripe_API {
     public const api_version = '2022-08-01';
 
     public const partner_id = 'pp_partner_HHbvqLh1AaO7Am';

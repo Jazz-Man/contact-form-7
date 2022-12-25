@@ -4,6 +4,10 @@
  *
  * @see https://contactform7.com/sendinblue-integration/
  */
+
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+use JazzMan\ContactForm7\WPCF7_Submission;
+
 wpcf7_include_module_file('sendinblue/service.php');
 wpcf7_include_module_file('sendinblue/contact-form-properties.php');
 wpcf7_include_module_file('sendinblue/doi.php');

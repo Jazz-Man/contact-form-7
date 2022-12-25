@@ -1,5 +1,8 @@
 <?php
 
+use JazzMan\ContactForm7\WPCF7;
+use JazzMan\ContactForm7\WPCF7_Submission;
+
 class WPCF7_ConstantContact_ContactPostRequest {
     private $email_address;
 
@@ -139,7 +142,7 @@ class WPCF7_ConstantContact_ContactPostRequest {
         return '';
     }
 
-    public function set_email_address($address, $permission_to_send = '') {
+    public function set_email_address( string $address, ?string $permission_to_send = '') {
         if (!wpcf7_is_email($address)
         || 80 < $this->strlen($address)) {
             return false;
@@ -245,7 +248,7 @@ class WPCF7_ConstantContact_ContactPostRequest {
         return $this->anniversary = $anniversary;
     }
 
-    public function add_custom_field($custom_field_id, $value) {
+    public function add_custom_field( string $custom_field_id, string $value) {
         $uuid_pattern = '/^[0-9a-f-]+$/i';
 
         $value = trim($value);
@@ -262,7 +265,7 @@ class WPCF7_ConstantContact_ContactPostRequest {
         ];
     }
 
-    public function add_phone_number($phone_number, $kind = 'home') {
+    public function add_phone_number(string $phone_number, string $kind = 'home') {
         $phone_number = trim($phone_number);
 
         if (empty($phone_number)
@@ -279,7 +282,7 @@ class WPCF7_ConstantContact_ContactPostRequest {
         ];
     }
 
-    public function add_street_address($street, $city, $state, $postal_code, $country, $kind = 'home') {
+    public function add_street_address( string $street, string $city, string $state, string $postal_code, string $country, string $kind = 'home') {
         $street = trim($street);
         $city = trim($city);
         $state = trim($state);
@@ -318,7 +321,7 @@ class WPCF7_ConstantContact_ContactPostRequest {
         return $this->list_memberships[] = $list_id;
     }
 
-    protected function strlen($text) {
+    protected function strlen( string $text) {
         return wpcf7_count_code_units($text);
     }
 }

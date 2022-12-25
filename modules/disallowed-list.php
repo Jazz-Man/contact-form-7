@@ -1,8 +1,10 @@
 <?php
 
+use JazzMan\ContactForm7\WPCF7_Submission;
+
 add_filter('wpcf7_spam', 'wpcf7_disallowed_list', 10, 2);
 
-function wpcf7_disallowed_list(bool $spam, WPCF7_Submission $submission) {
+function wpcf7_disallowed_list(bool $spam, WPCF7_Submission $submission): bool {
     if ($spam) {
         return $spam;
     }
@@ -46,7 +48,7 @@ function wpcf7_disallowed_list(bool $spam, WPCF7_Submission $submission) {
     return (bool) $word;
 }
 
-function wpcf7_check_disallowed_list($target) {
+function wpcf7_check_disallowed_list(string $target) {
     $mod_keys = get_option('disallowed_keys');
 
     if (is_scalar($mod_keys)) {

@@ -4,6 +4,9 @@
  *
  * @see https://contactform7.com/recaptcha/
  */
+
+use JazzMan\ContactForm7\WPCF7_Submission;
+
 wpcf7_include_module_file('recaptcha/service.php');
 
 add_action('wpcf7_init', 'wpcf7_recaptcha_register_service', 40, 0);

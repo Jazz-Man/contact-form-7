@@ -1,5 +1,7 @@
 <?php
 
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+
 /**
  * Validates uploaded files and moves them to the temporary directory.
  *

@@ -1,5 +1,7 @@
 <?php
 
+use JazzMan\ContactForm7\WPCF7_HTMLFormatter;
+
 /**
  * Replaces double line breaks with paragraph elements.
  *

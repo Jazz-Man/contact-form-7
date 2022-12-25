@@ -3,9 +3,14 @@
  ** Module for Flamingo plugin.
  ** http://wordpress.org/extend/plugins/flamingo/.
  */
+
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+use JazzMan\ContactForm7\WPCF7_MailTag;
+use JazzMan\ContactForm7\WPCF7_Submission;
+
 add_action('wpcf7_submit', 'wpcf7_flamingo_submit', 10, 2);
 
-function wpcf7_flamingo_submit($contact_form, $result): void {
+function wpcf7_flamingo_submit(WPCF7_ContactForm $contact_form, $result): void {
     if (!class_exists('Flamingo_Contact')
     || !class_exists('Flamingo_Inbound_Message')) {
         return;
@@ -168,7 +173,7 @@ function wpcf7_flamingo_submit($contact_form, $result): void {
     do_action('wpcf7_after_flamingo', $result);
 }
 
-function wpcf7_flamingo_get_value($field, $contact_form) {
+function wpcf7_flamingo_get_value($field, ?WPCF7_ContactForm $contact_form) {
     if (empty($field)
     || empty($contact_form)) {
         return false;
@@ -196,7 +201,7 @@ function wpcf7_flamingo_get_value($field, $contact_form) {
     );
 }
 
-function wpcf7_flamingo_add_channel($slug, $name = '') {
+function wpcf7_flamingo_add_channel($slug, ?string $name = '') {
     if (!class_exists('Flamingo_Inbound_Message')) {
         return false;
     }
@@ -252,7 +257,7 @@ function wpcf7_flamingo_add_channel($slug, $name = '') {
 
 add_action('wpcf7_after_update', 'wpcf7_flamingo_update_channel', 10, 1);
 
-function wpcf7_flamingo_update_channel($contact_form) {
+function wpcf7_flamingo_update_channel(WPCF7_ContactForm $contact_form) {
     if (!class_exists('Flamingo_Inbound_Message')) {
         return false;
     }
@@ -299,7 +304,7 @@ add_filter('wpcf7_special_mail_tags', 'wpcf7_flamingo_serial_number', 10, 4);
  *
  * @return string output of the given special mail-tag
  */
-function wpcf7_flamingo_serial_number($output, $name, $html, $mail_tag = null) {
+function wpcf7_flamingo_serial_number(string $output, ?string $name, bool $html, ?WPCF7_MailTag $mail_tag = null) {
     if (!$mail_tag instanceof WPCF7_MailTag) {
         wpcf7_doing_it_wrong(
             sprintf('%s()', __FUNCTION__),

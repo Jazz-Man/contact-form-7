@@ -1,5 +1,7 @@
 <?php
 
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+
 add_action('wpcf7_upgrade', 'wpcf7_convert_to_cpt', 10, 2);
 
 function wpcf7_convert_to_cpt($new_ver, $old_ver): void {

@@ -5,6 +5,11 @@
 
 /* form_tag handler */
 
+use JazzMan\ContactForm7\Admin\WPCF7_TagGenerator;
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+use JazzMan\ContactForm7\WPCF7_FormTag;
+use JazzMan\ContactForm7\WPCF7_Validation;
+
 add_action('wpcf7_init', 'wpcf7_add_form_tag_captcha', 10, 0);
 
 function wpcf7_add_form_tag_captcha(): void {
@@ -31,7 +36,7 @@ function wpcf7_add_form_tag_captcha(): void {
     );
 }
 
-function wpcf7_captchac_form_tag_handler(WPCF7_FormTag $tag) {
+function wpcf7_captchac_form_tag_handler(WPCF7_FormTag $tag): string {
     if (!class_exists('ReallySimpleCaptcha')) {
         $error = sprintf(
             /* translators: %s: link labeled 'Really Simple CAPTCHA' */
@@ -91,7 +96,7 @@ function wpcf7_captchac_form_tag_handler(WPCF7_FormTag $tag) {
     );
 }
 
-function wpcf7_captchar_form_tag_handler($tag) {
+function wpcf7_captchar_form_tag_handler(WPCF7_FormTag $tag) {
     if (empty($tag->name)) {
         return '';
     }
@@ -162,7 +167,7 @@ add_filter(
     2
 );
 
-function wpcf7_captcha_validation_filter($result, $tag) {
+function wpcf7_captcha_validation_filter( WPCF7_Validation $result, WPCF7_FormTag $tag) {
     $type = $tag->type;
     $name = $tag->name;
 
@@ -229,7 +234,7 @@ function wpcf7_captcha_ajax_refill($items) {
 
 add_filter('wpcf7_messages', 'wpcf7_captcha_messages', 10, 1);
 
-function wpcf7_captcha_messages($messages) {
+function wpcf7_captcha_messages(array $messages): array {
     return array_merge($messages, [
         'captcha_not_match' => [
             'description' => __('The code that sender entered does not match the CAPTCHA', 'contact-form-7'),
@@ -255,7 +260,7 @@ function wpcf7_add_tag_generator_captcha(): void {
     );
 }
 
-function wpcf7_tag_generator_captcha($contact_form, $args = ''): void {
+function wpcf7_tag_generator_captcha(WPCF7_ContactForm $contact_form, $args = ''): void {
     $args = wp_parse_args($args, []);
 
     if (!class_exists('ReallySimpleCaptcha')) {

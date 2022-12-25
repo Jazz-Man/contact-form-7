@@ -5,7 +5,14 @@
  */
 add_filter('wpcf7_form_tag_data_option', 'wpcf7_listo', 10, 3);
 
-function wpcf7_listo($data, $options, $args) {
+/**
+ * @param mixed|null $data
+ * @param  array  $options
+ * @param string|array $args
+ *
+ * @return array|mixed
+ */
+function wpcf7_listo($data, array $options, $args) {
     if (!function_exists('listo')) {
         return $data;
     }

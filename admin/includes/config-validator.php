@@ -1,5 +1,8 @@
 <?php
 
+use JazzMan\ContactForm7\WPCF7_ConfigValidator;
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+
 add_action('wpcf7_admin_menu', 'wpcf7_admin_init_bulk_cv', 10, 0);
 
 function wpcf7_admin_init_bulk_cv(): void {

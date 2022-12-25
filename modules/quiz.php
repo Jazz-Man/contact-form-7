@@ -5,6 +5,10 @@
 
 /* form_tag handler */
 
+use JazzMan\ContactForm7\Admin\WPCF7_TagGenerator;
+use JazzMan\ContactForm7\WPCF7_FormTag;
+use JazzMan\ContactForm7\WPCF7_Pipes;
+
 add_action('wpcf7_init', 'wpcf7_add_form_tag_quiz', 10, 0);
 
 function wpcf7_add_form_tag_quiz(): void {
@@ -19,7 +23,7 @@ function wpcf7_add_form_tag_quiz(): void {
     );
 }
 
-function wpcf7_quiz_form_tag_handler(WPCF7_FormTag $tag) {
+function wpcf7_quiz_form_tag_handler(WPCF7_FormTag $tag): string {
     if (empty($tag->name)) {
         return '';
     }
@@ -60,8 +64,7 @@ function wpcf7_quiz_form_tag_handler(WPCF7_FormTag $tag) {
 
     $pipes = $tag->pipes;
 
-    if ($pipes instanceof WPCF7_Pipes
-    && !$pipes->zero()) {
+    if ($pipes instanceof WPCF7_Pipes && !$pipes->zero()) {
         $pipe = $pipes->random_pipe();
         $question = $pipe->before;
         $answer = $pipe->after;
@@ -141,8 +144,7 @@ function wpcf7_quiz_ajax_refill($items) {
             continue;
         }
 
-        if ($pipes instanceof WPCF7_Pipes
-        && !$pipes->zero()) {
+        if ($pipes instanceof WPCF7_Pipes && !$pipes->zero()) {
             $pipe = $pipes->random_pipe();
             $question = $pipe->before;
             $answer = $pipe->after;
@@ -187,7 +189,7 @@ function wpcf7_quiz_mail_tag($replaced, $submitted, $html, $mail_tag) {
 
 add_filter('wpcf7_messages', 'wpcf7_quiz_messages', 10, 1);
 
-function wpcf7_quiz_messages($messages) {
+function wpcf7_quiz_messages(array $messages): array {
     return array_merge($messages, [
         'quiz_answer_not_correct' => [
             'description' => __('Sender does not enter the correct answer to the quiz', 'contact-form-7'),

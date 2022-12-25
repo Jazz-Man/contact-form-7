@@ -4,6 +4,9 @@
  *
  * @see https://contactform7.com/doi-helper/
  */
+
+use JazzMan\ContactForm7\WPCF7_Submission;
+
 add_action('wpcf7_doi', 'wpcf7_doihelper_start_session', 10, 3);
 
 /**

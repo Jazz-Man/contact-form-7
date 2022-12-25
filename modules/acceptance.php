@@ -5,6 +5,13 @@
 
 /* form_tag handler */
 
+use JazzMan\ContactForm7\Admin\WPCF7_TagGenerator;
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+use JazzMan\ContactForm7\WPCF7_FormTag;
+use JazzMan\ContactForm7\WPCF7_MailTag;
+use JazzMan\ContactForm7\WPCF7_Submission;
+use JazzMan\ContactForm7\WPCF7_Validation;
+
 add_action('wpcf7_init', 'wpcf7_add_form_tag_acceptance', 10, 0);
 
 function wpcf7_add_form_tag_acceptance(): void {
@@ -17,7 +24,7 @@ function wpcf7_add_form_tag_acceptance(): void {
     );
 }
 
-function wpcf7_acceptance_form_tag_handler(WPCF7_FormTag $tag) {
+function wpcf7_acceptance_form_tag_handler(WPCF7_FormTag $tag): string {
     if (empty($tag->name)) {
         return '';
     }
@@ -113,7 +120,7 @@ add_filter(
     2
 );
 
-function wpcf7_acceptance_validation_filter($result, $tag) {
+function wpcf7_acceptance_validation_filter(WPCF7_Validation $result, WPCF7_FormTag $tag): WPCF7_Validation {
     if (!wpcf7_acceptance_as_validation()) {
         return $result;
     }
@@ -139,7 +146,7 @@ function wpcf7_acceptance_validation_filter($result, $tag) {
 
 add_filter('wpcf7_acceptance', 'wpcf7_acceptance_filter', 10, 2);
 
-function wpcf7_acceptance_filter($accepted, $submission) {
+function wpcf7_acceptance_filter( bool $accepted, WPCF7_Submission $submission): bool {
     $tags = wpcf7_scan_form_tags(['type' => 'acceptance']);
 
     foreach ($tags as $tag) {
@@ -183,7 +190,7 @@ add_filter(
     1
 );
 
-function wpcf7_acceptance_form_class_attr($class_attr) {
+function wpcf7_acceptance_form_class_attr(string $class_attr): string {
     if (wpcf7_acceptance_as_validation()) {
         return $class_attr.' wpcf7-acceptance-as-validation';
     }
@@ -191,7 +198,7 @@ function wpcf7_acceptance_form_class_attr($class_attr) {
     return $class_attr;
 }
 
-function wpcf7_acceptance_as_validation() {
+function wpcf7_acceptance_as_validation(): bool {
     if (!$contact_form = wpcf7_get_current_contact_form()) {
         return false;
     }
@@ -206,7 +213,7 @@ add_filter(
     4
 );
 
-function wpcf7_acceptance_mail_tag($replaced, $submitted, $html, $mail_tag) {
+function wpcf7_acceptance_mail_tag(?string $replaced, ?string $submitted, bool $html, WPCF7_MailTag $mail_tag) {
     $form_tag = $mail_tag->corresponding_form_tag();
 
     if (!$form_tag) {
@@ -258,7 +265,7 @@ function wpcf7_add_tag_generator_acceptance(): void {
     );
 }
 
-function wpcf7_tag_generator_acceptance($contact_form, $args = ''): void {
+function wpcf7_tag_generator_acceptance(WPCF7_ContactForm $contact_form, $args = ''): void {
     $args = wp_parse_args($args, []);
     $type = 'acceptance';
 

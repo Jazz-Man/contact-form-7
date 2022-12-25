@@ -9,6 +9,11 @@
 
 /* form_tag handler */
 
+use JazzMan\ContactForm7\Admin\WPCF7_TagGenerator;
+use JazzMan\ContactForm7\Swv\WPCF7_SWV_Schema;
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+use JazzMan\ContactForm7\WPCF7_FormTag;
+
 add_action('wpcf7_init', 'wpcf7_add_form_tag_text', 10, 0);
 
 function wpcf7_add_form_tag_text(): void {
@@ -172,7 +177,7 @@ function wpcf7_swv_add_text_rules(WPCF7_SWV_Schema $schema, WPCF7_ContactForm $c
 
 add_filter('wpcf7_messages', 'wpcf7_text_messages', 10, 1);
 
-function wpcf7_text_messages($messages) {
+function wpcf7_text_messages(array $messages): array {
     return array_merge($messages, [
         'invalid_email' => [
             'description' => __('Email address that the sender entered is invalid', 'contact-form-7'),

@@ -5,6 +5,11 @@
 
 /* form_tag handler */
 
+use JazzMan\ContactForm7\Admin\WPCF7_TagGenerator;
+use JazzMan\ContactForm7\Swv\WPCF7_SWV_Schema;
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+use JazzMan\ContactForm7\WPCF7_FormTag;
+
 add_action('wpcf7_init', 'wpcf7_add_form_tag_select', 10, 0);
 
 function wpcf7_add_form_tag_select(): void {

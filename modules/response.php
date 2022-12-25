@@ -5,6 +5,8 @@
 
 /* form_tag handler */
 
+use JazzMan\ContactForm7\WPCF7_FormTag;
+
 add_action('wpcf7_init', 'wpcf7_add_form_tag_response', 10, 0);
 
 function wpcf7_add_form_tag_response(): void {

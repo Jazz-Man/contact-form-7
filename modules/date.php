@@ -6,6 +6,11 @@
 
 /* form_tag handler */
 
+use JazzMan\ContactForm7\Admin\WPCF7_TagGenerator;
+use JazzMan\ContactForm7\Swv\WPCF7_SWV_Schema;
+use JazzMan\ContactForm7\WPCF7_ContactForm;
+use JazzMan\ContactForm7\WPCF7_FormTag;
+
 add_action('wpcf7_init', 'wpcf7_add_form_tag_date', 10, 0);
 
 function wpcf7_add_form_tag_date(): void {
@@ -149,7 +154,7 @@ function wpcf7_swv_add_date_rules(WPCF7_SWV_Schema $schema, WPCF7_ContactForm $c
 
 add_filter('wpcf7_messages', 'wpcf7_date_messages', 10, 1);
 
-function wpcf7_date_messages($messages) {
+function wpcf7_date_messages(array $messages) {
     return array_merge($messages, [
         'invalid_date' => [
             'description' => __('Date format that the sender entered is invalid', 'contact-form-7'),
