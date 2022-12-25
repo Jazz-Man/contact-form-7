@@ -1,57 +1,55 @@
 <?php
 
 trait WPCF7_SWV_SchemaHolder {
+    protected WPCF7_SWV_Schema $schema;
 
-	protected WPCF7_SWV_Schema $schema;
+    /**
+     * Retrieves SWV schema for this holder object (contact form).
+     *
+     * @return WPCF7_SWV_Schema the schema object
+     */
+    public function get_schema(): WPCF7_SWV_Schema {
+        if (isset($this->schema)) {
+            return $this->schema;
+        }
 
+        $schema = new WPCF7_SWV_Schema([
+            'locale' => $this->locale ?? '',
+        ]);
 
-	/**
-	 * Retrieves SWV schema for this holder object (contact form).
-	 *
-	 * @return WPCF7_SWV_Schema The schema object.
-	 */
-	public function get_schema(): WPCF7_SWV_Schema {
-		if ( isset( $this->schema ) ) {
-			return $this->schema;
-		}
+        do_action('wpcf7_swv_create_schema', $schema, $this);
 
-		$schema = new WPCF7_SWV_Schema( array(
-			'locale' => isset( $this->locale ) ? $this->locale : '',
-		) );
+        return $this->schema = $schema;
+    }
 
-		do_action( 'wpcf7_swv_create_schema', $schema, $this );
+    /**
+     * Validates form inputs based on the schema and given context.
+     *
+     * @param mixed $context
+     */
+    public function validate_schema($context, WPCF7_Validation $validity): void {
+        $callback = function ($rule) use (&$callback, $context, $validity): void {
+            if (!$rule->matches($context)) {
+                return;
+            }
 
-		return $this->schema = $schema;
-	}
+            if ($rule instanceof WPCF7_SWV_CompositeRule) {
+                foreach ($rule->rules() as $child_rule) {
+                    call_user_func($callback, $child_rule);
+                }
+            } else {
+                $field = $rule->get_property('field');
 
+                if ($validity->is_valid($field)) {
+                    $result = $rule->validate($context);
 
-	/**
-	 * Validates form inputs based on the schema and given context.
-	 */
-	public function validate_schema( $context, WPCF7_Validation $validity ) {
-		$callback = function ( $rule ) use ( &$callback, $context, $validity ) {
-			if ( ! $rule->matches( $context ) ) {
-				return;
-			}
+                    if (is_wp_error($result)) {
+                        $validity->invalidate($field, $result);
+                    }
+                }
+            }
+        };
 
-			if ( $rule instanceof WPCF7_SWV_CompositeRule ) {
-				foreach ( $rule->rules() as $child_rule ) {
-					call_user_func( $callback, $child_rule );
-				}
-			} else {
-				$field = $rule->get_property( 'field' );
-
-				if ( $validity->is_valid( $field ) ) {
-					$result = $rule->validate( $context );
-
-					if ( is_wp_error( $result ) ) {
-						$validity->invalidate( $field, $result );
-					}
-				}
-			}
-		};
-
-		call_user_func( $callback, $this->get_schema() );
-	}
-
+        call_user_func($callback, $this->get_schema());
+    }
 }

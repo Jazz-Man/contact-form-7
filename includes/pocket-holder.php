@@ -4,17 +4,15 @@
  * Handy trait provides methods to handle dynamic properties.
  */
 trait WPCF7_PocketHolder {
+    protected array $pocket = [];
 
-	protected array $pocket = array();
+    public function pull($key) {
+        if (isset($this->pocket[$key])) {
+            return $this->pocket[$key];
+        }
+    }
 
-	public function pull( $key ) {
-		if ( isset( $this->pocket[$key] ) ) {
-			return $this->pocket[$key];
-		}
-	}
-
-	public function push( $key, $value ) {
-		$this->pocket[$key] = $value;
-	}
-
+    public function push($key, $value): void {
+        $this->pocket[$key] = $value;
+    }
 }

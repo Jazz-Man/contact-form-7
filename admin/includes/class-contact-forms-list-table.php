@@ -1,239 +1,263 @@
 <?php
 
-if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+if (!class_exists('WP_List_Table')) {
+    require_once ABSPATH.'wp-admin/includes/class-wp-list-table.php';
 }
 
 class WPCF7_Contact_Form_List_Table extends WP_List_Table {
+    public function __construct() {
+        parent::__construct([
+            'singular' => 'post',
+            'plural' => 'posts',
+            'ajax' => false,
+        ]);
+    }
 
-	public static function define_columns() {
-		return array(
-			'cb' => '<input type="checkbox" />',
-			'title' => __( 'Title', 'contact-form-7' ),
-			'shortcode' => __( 'Shortcode', 'contact-form-7' ),
-			'author' => __( 'Author', 'contact-form-7' ),
-			'date' => __( 'Date', 'contact-form-7' ),
-		);
-	}
+    public static function define_columns() {
+        return [
+            'cb' => '<input type="checkbox" />',
+            'title' => __('Title', 'contact-form-7'),
+            'shortcode' => __('Shortcode', 'contact-form-7'),
+            'author' => __('Author', 'contact-form-7'),
+            'date' => __('Date', 'contact-form-7'),
+        ];
+    }
 
-	public function __construct() {
-		parent::__construct( array(
-			'singular' => 'post',
-			'plural' => 'posts',
-			'ajax' => false,
-		) );
-	}
+    public function prepare_items(): void {
+        $current_screen = get_current_screen();
+        $per_page = $this->get_items_per_page('wpcf7_contact_forms_per_page');
 
-	public function prepare_items() {
-		$current_screen = get_current_screen();
-		$per_page = $this->get_items_per_page( 'wpcf7_contact_forms_per_page' );
+        $args = [
+            'posts_per_page' => $per_page,
+            'orderby' => 'title',
+            'order' => 'ASC',
+            'offset' => ($this->get_pagenum() - 1) * $per_page,
+        ];
 
-		$args = array(
-			'posts_per_page' => $per_page,
-			'orderby' => 'title',
-			'order' => 'ASC',
-			'offset' => ( $this->get_pagenum() - 1 ) * $per_page,
-		);
+        if (!empty($_REQUEST['s'])) {
+            $args['s'] = $_REQUEST['s'];
+        }
 
-		if ( ! empty( $_REQUEST['s'] ) ) {
-			$args['s'] = $_REQUEST['s'];
-		}
+        if (!empty($_REQUEST['orderby'])) {
+            if ('title' == $_REQUEST['orderby']) {
+                $args['orderby'] = 'title';
+            } elseif ('author' == $_REQUEST['orderby']) {
+                $args['orderby'] = 'author';
+            } elseif ('date' == $_REQUEST['orderby']) {
+                $args['orderby'] = 'date';
+            }
+        }
 
-		if ( ! empty( $_REQUEST['orderby'] ) ) {
-			if ( 'title' == $_REQUEST['orderby'] ) {
-				$args['orderby'] = 'title';
-			} elseif ( 'author' == $_REQUEST['orderby'] ) {
-				$args['orderby'] = 'author';
-			} elseif ( 'date' == $_REQUEST['orderby'] ) {
-				$args['orderby'] = 'date';
-			}
-		}
+        if (!empty($_REQUEST['order'])) {
+            if ('asc' == strtolower($_REQUEST['order'])) {
+                $args['order'] = 'ASC';
+            } elseif ('desc' == strtolower($_REQUEST['order'])) {
+                $args['order'] = 'DESC';
+            }
+        }
 
-		if ( ! empty( $_REQUEST['order'] ) ) {
-			if ( 'asc' == strtolower( $_REQUEST['order'] ) ) {
-				$args['order'] = 'ASC';
-			} elseif ( 'desc' == strtolower( $_REQUEST['order'] ) ) {
-				$args['order'] = 'DESC';
-			}
-		}
+        $this->items = WPCF7_ContactForm::find($args);
 
-		$this->items = WPCF7_ContactForm::find( $args );
+        $total_items = WPCF7_ContactForm::count();
+        $total_pages = ceil($total_items / $per_page);
 
-		$total_items = WPCF7_ContactForm::count();
-		$total_pages = ceil( $total_items / $per_page );
+        $this->set_pagination_args([
+            'total_items' => $total_items,
+            'total_pages' => $total_pages,
+            'per_page' => $per_page,
+        ]);
+    }
 
-		$this->set_pagination_args( array(
-			'total_items' => $total_items,
-			'total_pages' => $total_pages,
-			'per_page' => $per_page,
-		) );
-	}
+    public function get_columns() {
+        return get_column_headers(get_current_screen());
+    }
 
-	public function get_columns() {
-		return get_column_headers( get_current_screen() );
-	}
+	/**
+	 * @param \WPCF7_ContactForm $item
+	 *
+	 * @return string|void
+	 */
+    public function column_cb($item) {
+        return sprintf(
+            '<input type="checkbox" name="%1$s[]" value="%2$s" />',
+            $this->_args['singular'],
+            $item->id()
+        );
+    }
 
-	protected function get_sortable_columns() {
-		$columns = array(
-			'title' => array( 'title', true ),
-			'author' => array( 'author', false ),
-			'date' => array( 'date', false ),
-		);
+	/**
+	 * @param \WPCF7_ContactForm $item
+	 *
+	 * @return string
+	 */
+    public function column_title($item) {
+        $edit_link = add_query_arg(
+            [
+                'post' => absint($item->id()),
+                'action' => 'edit',
+            ],
+            menu_page_url('wpcf7', false)
+        );
 
-		return $columns;
-	}
+        $output = sprintf(
+            '<a class="row-title" href="%1$s" aria-label="%2$s">%3$s</a>',
+            esc_url($edit_link),
+            esc_attr(sprintf(
+                /* translators: %s: title of contact form */
+                __('Edit &#8220;%s&#8221;', 'contact-form-7'),
+                $item->title()
+            )),
+            esc_html($item->title())
+        );
 
-	protected function get_bulk_actions() {
-		return array(
-			'delete' => __( 'Delete', 'contact-form-7' ),
-		);
-	}
+        $output = sprintf('<strong>%s</strong>', $output);
 
-	protected function column_default( $item, $column_name ) {
-		return '';
-	}
+        if (wpcf7_validate_configuration()
+        && current_user_can('wpcf7_edit_contact_form', $item->id())) {
+            $config_validator = new WPCF7_ConfigValidator($item);
+            $config_validator->restore();
 
-	public function column_cb( $item ) {
-		return sprintf(
-			'<input type="checkbox" name="%1$s[]" value="%2$s" />',
-			$this->_args['singular'],
-			$item->id()
-		);
-	}
+            if ($count_errors = $config_validator->count_errors()) {
+                $error_notice = sprintf(
+                    _n(
+                        /* translators: %s: number of errors detected */
+                        '%s configuration error detected',
+                        '%s configuration errors detected',
+                        $count_errors,
+                        'contact-form-7'
+                    ),
+                    number_format_i18n($count_errors)
+                );
 
-	public function column_title( $item ) {
-		$edit_link = add_query_arg(
-			array(
-				'post' => absint( $item->id() ),
-				'action' => 'edit',
-			),
-			menu_page_url( 'wpcf7', false )
-		);
+                $output .= sprintf(
+                    '<div class="config-error"><span class="icon-in-circle" aria-hidden="true">!</span> %s</div>',
+                    $error_notice
+                );
+            }
+        }
 
-		$output = sprintf(
-			'<a class="row-title" href="%1$s" aria-label="%2$s">%3$s</a>',
-			esc_url( $edit_link ),
-			esc_attr( sprintf(
-				/* translators: %s: title of contact form */
-				__( 'Edit &#8220;%s&#8221;', 'contact-form-7' ),
-				$item->title()
-			) ),
-			esc_html( $item->title() )
-		);
+        return $output;
+    }
 
-		$output = sprintf( '<strong>%s</strong>', $output );
+    public function column_author($item) {
+        $post = get_post($item->id());
 
-		if ( wpcf7_validate_configuration()
-		and current_user_can( 'wpcf7_edit_contact_form', $item->id() ) ) {
-			$config_validator = new WPCF7_ConfigValidator( $item );
-			$config_validator->restore();
+        if (!$post) {
+            return;
+        }
 
-			if ( $count_errors = $config_validator->count_errors() ) {
-				$error_notice = sprintf(
-					_n(
-						/* translators: %s: number of errors detected */
-						'%s configuration error detected',
-						'%s configuration errors detected',
-						$count_errors, 'contact-form-7' ),
-					number_format_i18n( $count_errors )
-				);
+        $author = get_userdata($post->post_author);
 
-				$output .= sprintf(
-					'<div class="config-error"><span class="icon-in-circle" aria-hidden="true">!</span> %s</div>',
-					$error_notice
-				);
-			}
-		}
+        if (false === $author) {
+            return;
+        }
 
-		return $output;
-	}
+        return esc_html($author->display_name);
+    }
 
-	protected function handle_row_actions( $item, $column_name, $primary ) {
-		if ( $column_name !== $primary ) {
-			return '';
-		}
+	/**
+	 * @param \WPCF7_ContactForm $item
+	 *
+	 * @return string
+	 */
+    public function column_shortcode($item) {
+        $shortcodes = [$item->shortcode()];
 
-		$edit_link = add_query_arg(
-			array(
-				'post' => absint( $item->id() ),
-				'action' => 'edit',
-			),
-			menu_page_url( 'wpcf7', false )
-		);
+        $output = '';
 
-		$actions = array(
-			'edit' => wpcf7_link( $edit_link, __( 'Edit', 'contact-form-7' ) ),
-		);
+        foreach ($shortcodes as $shortcode) {
+            $output .= "\n".'<span class="shortcode"><input type="text"'
+                .' onfocus="this.select();" readonly="readonly"'
+                .' value="'.esc_attr($shortcode).'"'
+                .' class="large-text code" /></span>';
+        }
 
-		if ( current_user_can( 'wpcf7_edit_contact_form', $item->id() ) ) {
-			$copy_link = add_query_arg(
-				array(
-					'post' => absint( $item->id() ),
-					'action' => 'copy',
-				),
-				menu_page_url( 'wpcf7', false )
-			);
+        return trim($output);
+    }
 
-			$copy_link = wp_nonce_url(
-				$copy_link,
-				'wpcf7-copy-contact-form_' . absint( $item->id() )
-			);
+	/**
+	 * @param \WPCF7_ContactForm $item
+	 *
+	 * @return string
+	 */
+    public function column_date($item) {
+        $datetime = get_post_datetime($item->id());
 
-			$actions = array_merge( $actions, array(
-				'copy' => wpcf7_link( $copy_link, __( 'Duplicate', 'contact-form-7' ) ),
-			) );
-		}
+        if (false === $datetime) {
+            return '';
+        }
 
-		return $this->row_actions( $actions );
-	}
+        return sprintf(
+            /* translators: 1: date, 2: time */
+            __('%1$s at %2$s', 'contact-form-7'),
+            /* translators: date format, see https://www.php.net/date */
+            $datetime->format(__('Y/m/d', 'contact-form-7')),
+            /* translators: time format, see https://www.php.net/date */
+            $datetime->format(__('g:i a', 'contact-form-7'))
+        );
+    }
 
-	public function column_author( $item ) {
-		$post = get_post( $item->id() );
+    protected function get_sortable_columns() {
+        return [
+            'title' => ['title', true],
+            'author' => ['author', false],
+            'date' => ['date', false],
+        ];
+    }
 
-		if ( ! $post ) {
-			return;
-		}
+    protected function get_bulk_actions() {
+        return [
+            'delete' => __('Delete', 'contact-form-7'),
+        ];
+    }
 
-		$author = get_userdata( $post->post_author );
+    protected function column_default($item, $column_name) {
+        return '';
+    }
 
-		if ( false === $author ) {
-			return;
-		}
+	/**
+	 * @param \WPCF7_ContactForm $item
+	 * @param string $column_name
+	 * @param string $primary
+	 *
+	 * @return string
+	 */
+    protected function handle_row_actions($item, $column_name, $primary) {
+        if ($column_name !== $primary) {
+            return '';
+        }
 
-		return esc_html( $author->display_name );
-	}
+        $edit_link = add_query_arg(
+            [
+                'post' => absint($item->id()),
+                'action' => 'edit',
+            ],
+            menu_page_url('wpcf7', false)
+        );
 
-	public function column_shortcode( $item ) {
-		$shortcodes = array( $item->shortcode() );
+        $actions = [
+            'edit' => wpcf7_link($edit_link, __('Edit', 'contact-form-7')),
+        ];
 
-		$output = '';
+        if (current_user_can('wpcf7_edit_contact_form', $item->id())) {
+            $copy_link = add_query_arg(
+                [
+                    'post' => absint($item->id()),
+                    'action' => 'copy',
+                ],
+                menu_page_url('wpcf7', false)
+            );
 
-		foreach ( $shortcodes as $shortcode ) {
-			$output .= "\n" . '<span class="shortcode"><input type="text"'
-				. ' onfocus="this.select();" readonly="readonly"'
-				. ' value="' . esc_attr( $shortcode ) . '"'
-				. ' class="large-text code" /></span>';
-		}
+            $copy_link = wp_nonce_url(
+                $copy_link,
+                'wpcf7-copy-contact-form_'.absint($item->id())
+            );
 
-		return trim( $output );
-	}
+            $actions = array_merge($actions, [
+                'copy' => wpcf7_link($copy_link, __('Duplicate', 'contact-form-7')),
+            ]);
+        }
 
-	public function column_date( $item ) {
-		$datetime = get_post_datetime( $item->id() );
-
-		if ( false === $datetime ) {
-			return '';
-		}
-
-		$t_time = sprintf(
-			/* translators: 1: date, 2: time */
-			__( '%1$s at %2$s', 'contact-form-7' ),
-			/* translators: date format, see https://www.php.net/date */
-			$datetime->format( __( 'Y/m/d', 'contact-form-7' ) ),
-			/* translators: time format, see https://www.php.net/date */
-			$datetime->format( __( 'g:i a', 'contact-form-7' ) )
-		);
-
-		return $t_time;
-	}
+        return $this->row_actions($actions);
+    }
 }

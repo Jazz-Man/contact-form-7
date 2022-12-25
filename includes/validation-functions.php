@@ -7,210 +7,211 @@
  * and may be followed by any number of letters, digits ([0-9]),
  * hyphens ("-"), underscores ("_"), colons (":"), and periods (".").
  *
- * @link http://www.w3.org/TR/html401/types.html#h-6.2
+ * @see http://www.w3.org/TR/html401/types.html#h-6.2
  *
- * @return bool True if it is a valid name, false if not.
+ * @return bool true if it is a valid name, false if not
  */
-function wpcf7_is_name( string $text ) {
-	return preg_match( '/^[A-Za-z][-A-Za-z0-9_:.]*$/', $text );
+function wpcf7_is_name(string $text) {
+    return preg_match('/^[A-Za-z][-A-Za-z0-9_:.]*$/', $text);
 }
-
 
 /**
  * Checks whether the given text is a well-formed email address.
  */
-function wpcf7_is_email( string $text ) {
-	$result = is_email( $text );
-	return apply_filters( 'wpcf7_is_email', $result, $text );
-}
+function wpcf7_is_email(string $text) {
+    $result = is_email($text);
 
+    return apply_filters('wpcf7_is_email', $result, $text);
+}
 
 /**
  * Checks whether the given text is a well-formed URL.
  */
-function wpcf7_is_url( string $text ) {
-	$scheme = wp_parse_url( $text, PHP_URL_SCHEME );
-	$result = $scheme && in_array( $scheme, wp_allowed_protocols(), true );
-	return apply_filters( 'wpcf7_is_url', $result, $text );
-}
+function wpcf7_is_url(string $text) {
+    $scheme = wp_parse_url($text, PHP_URL_SCHEME);
+    $result = $scheme && in_array($scheme, wp_allowed_protocols(), true);
 
+    return apply_filters('wpcf7_is_url', $result, $text);
+}
 
 /**
  * Checks whether the given text is a well-formed telephone number.
  */
-function wpcf7_is_tel( string $text ) {
-	$text = preg_replace( '%[()/.*#\s-]+%', '', $text );
-	$result = preg_match( '/^[+]?[0-9]+$/', $text );
-	return apply_filters( 'wpcf7_is_tel', $result, $text );
-}
+function wpcf7_is_tel(string $text) {
+    $text = preg_replace('%[()/.*#\s-]+%', '', $text);
+    $result = preg_match('/^[+]?[0-9]+$/', $text);
 
+    return apply_filters('wpcf7_is_tel', $result, $text);
+}
 
 /**
  * Checks whether the given text is a well-formed number.
  *
- * @link https://html.spec.whatwg.org/multipage/input.html#number-state-(type=number)
+ * @see https://html.spec.whatwg.org/multipage/input.html#number-state-(type=number)
+ *
+ * @param mixed $text
  */
-function wpcf7_is_number( $text ) {
-	$result = false;
+function wpcf7_is_number($text) {
+    $result = false;
 
-	$patterns = array(
-		'/^[-]?[0-9]+(?:[eE][+-]?[0-9]+)?$/',
-		'/^[-]?(?:[0-9]+)?[.][0-9]+(?:[eE][+-]?[0-9]+)?$/',
-	);
+    $patterns = [
+        '/^[-]?[0-9]+(?:[eE][+-]?[0-9]+)?$/',
+        '/^[-]?(?:[0-9]+)?[.][0-9]+(?:[eE][+-]?[0-9]+)?$/',
+    ];
 
-	foreach ( $patterns as $pattern ) {
-		if ( preg_match( $pattern, $text ) ) {
-			$result = true;
-			break;
-		}
-	}
+    foreach ($patterns as $pattern) {
+        if (preg_match($pattern, $text)) {
+            $result = true;
 
-	return apply_filters( 'wpcf7_is_number', $result, $text );
+            break;
+        }
+    }
+
+    return apply_filters('wpcf7_is_number', $result, $text);
 }
-
 
 /**
  * Checks whether the given text is a valid date.
  *
- * @link https://html.spec.whatwg.org/multipage/input.html#date-state-(type=date)
+ * @see https://html.spec.whatwg.org/multipage/input.html#date-state-(type=date)
  */
-function wpcf7_is_date( string $text ) {
-	$result = preg_match( '/^([0-9]{4,})-([0-9]{2})-([0-9]{2})$/', $text, $matches );
+function wpcf7_is_date(string $text) {
+    $result = preg_match('/^([0-9]{4,})-([0-9]{2})-([0-9]{2})$/', $text, $matches);
 
-	if ( $result ) {
-		$result = checkdate( $matches[2], $matches[3], $matches[1] );
-	}
+    if ($result) {
+        $result = checkdate($matches[2], $matches[3], $matches[1]);
+    }
 
-	return apply_filters( 'wpcf7_is_date', $result, $text );
+    return apply_filters('wpcf7_is_date', $result, $text);
 }
-
 
 /**
  * Checks whether the given text is a well-formed mailbox list.
  *
- * @param string|array $mailbox_list The subject to be checked.
- *                     Comma-separated string or an array of mailboxes.
- * @return array|bool Array of email addresses if all items are well-formed
- *                    mailbox, false if not.
+ * @param array|string $mailbox_list The subject to be checked.
+ *                                   Comma-separated string or an array of mailboxes.
+ *
+ * @return array|bool array of email addresses if all items are well-formed
+ *                    mailbox, false if not
  */
-function wpcf7_is_mailbox_list( $mailbox_list ) {
-	if ( ! is_array( $mailbox_list ) ) {
-		$mailbox_text = (string) $mailbox_list;
+function wpcf7_is_mailbox_list($mailbox_list) {
+    if (!is_array($mailbox_list)) {
+        $mailbox_text = (string) $mailbox_list;
 
-		$mailbox_text = preg_replace(
-			'/\\\\(?:\"|\')/',
-			'esc-quote',
-			$mailbox_text
-		);
+        $mailbox_text = preg_replace(
+            '/\\\\(?:\"|\')/',
+            'esc-quote',
+            $mailbox_text
+        );
 
-		$mailbox_text = preg_replace(
-			'/(?:\".*?\"|\'.*?\')/',
-			'quoted-string',
-			$mailbox_text
-		);
+        $mailbox_text = preg_replace(
+            '/(?:\".*?\"|\'.*?\')/',
+            'quoted-string',
+            $mailbox_text
+        );
 
-		$mailbox_list = explode( ',', $mailbox_text );
-	}
+        $mailbox_list = explode(',', $mailbox_text);
+    }
 
-	$addresses = array();
+    $addresses = [];
 
-	foreach ( $mailbox_list as $mailbox ) {
-		if ( ! is_string( $mailbox ) ) {
-			return false;
-		}
+    foreach ($mailbox_list as $mailbox) {
+        if (!is_string($mailbox)) {
+            return false;
+        }
 
-		$mailbox = trim( $mailbox );
+        $mailbox = trim($mailbox);
 
-		if ( '' === $mailbox ) {
-			continue;
-		}
+        if ('' === $mailbox) {
+            continue;
+        }
 
-		if ( preg_match( '/<(.+)>$/', $mailbox, $matches ) ) {
-			$addr_spec = $matches[1];
-		} else {
-			$addr_spec = $mailbox;
-		}
+        if (preg_match('/<(.+)>$/', $mailbox, $matches)) {
+            $addr_spec = $matches[1];
+        } else {
+            $addr_spec = $mailbox;
+        }
 
-		if ( ! wpcf7_is_email( $addr_spec ) ) {
-			return false;
-		}
+        if (!wpcf7_is_email($addr_spec)) {
+            return false;
+        }
 
-		$addresses[] = $addr_spec;
-	}
+        $addresses[] = $addr_spec;
+    }
 
-	return $addresses;
+    return $addresses;
 }
-
 
 /**
  * Checks whether an email address belongs to a domain.
  *
- * @param string $email A mailbox or a comma-separated list of mailboxes.
- * @param string $domain Internet domain name.
- * @return bool True if all of the email addresses belong to the domain,
- *              false if not.
+ * @param string $email  a mailbox or a comma-separated list of mailboxes
+ * @param string $domain internet domain name
+ *
+ * @return bool true if all of the email addresses belong to the domain,
+ *              false if not
  */
-function wpcf7_is_email_in_domain( $email, $domain ) {
-	$email_list = wpcf7_is_mailbox_list( $email );
+function wpcf7_is_email_in_domain($email, $domain) {
+    $email_list = wpcf7_is_mailbox_list($email);
 
-	if ( false === $email_list ) {
-		return false;
-	}
+    if (false === $email_list) {
+        return false;
+    }
 
-	$domain = strtolower( $domain );
+    $domain = strtolower($domain);
 
-	foreach ( $email_list as $email ) {
-		$email_domain = substr( $email, strrpos( $email, '@' ) + 1 );
-		$email_domain = strtolower( $email_domain );
-		$domain_parts = explode( '.', $domain );
+    foreach ($email_list as $email) {
+        $email_domain = substr($email, strrpos($email, '@') + 1);
+        $email_domain = strtolower($email_domain);
+        $domain_parts = explode('.', $domain);
 
-		do {
-			$site_domain = implode( '.', $domain_parts );
+        do {
+            $site_domain = implode('.', $domain_parts);
 
-			if ( $site_domain == $email_domain ) {
-				continue 2;
-			}
+            if ($site_domain == $email_domain) {
+                continue 2;
+            }
 
-			array_shift( $domain_parts );
-		} while ( $domain_parts );
+            array_shift($domain_parts);
+        } while ($domain_parts);
 
-		return false;
-	}
+        return false;
+    }
 
-	return true;
+    return true;
 }
-
 
 /**
  * Checks whether an email address belongs to the site domain.
+ *
+ * @param mixed $email
  */
-function wpcf7_is_email_in_site_domain( $email ) {
-	if ( wpcf7_is_localhost() ) {
-		return true;
-	}
+function wpcf7_is_email_in_site_domain($email) {
+    if (wpcf7_is_localhost()) {
+        return true;
+    }
 
-	$homes = array(
-		home_url(),
-		network_home_url(),
-	);
+    $homes = [
+        home_url(),
+        network_home_url(),
+    ];
 
-	$homes = array_unique( $homes );
+    $homes = array_unique($homes);
 
-	foreach ( $homes as $home ) {
-		$sitename = wp_parse_url( $home, PHP_URL_HOST );
+    foreach ($homes as $home) {
+        $sitename = wp_parse_url($home, PHP_URL_HOST);
 
-		if ( WP_Http::is_ip_address( $sitename ) ) {
-			return true;
-		}
+        if (WP_Http::is_ip_address($sitename)) {
+            return true;
+        }
 
-		if ( wpcf7_is_email_in_domain( $email, $sitename ) ) {
-			return true;
-		}
-	}
+        if (wpcf7_is_email_in_domain($email, $sitename)) {
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }
-
 
 /**
  * Verifies that a given file path is under the directories that WordPress
@@ -218,25 +219,26 @@ function wpcf7_is_email_in_site_domain( $email ) {
  *
  * Returns false if the file at the given path does not exist yet.
  *
- * @param string $path A file path.
- * @return bool True if the path is under the content directories,
- *              false otherwise.
+ * @param string $path a file path
+ *
+ * @return bool true if the path is under the content directories,
+ *              false otherwise
  */
-function wpcf7_is_file_path_in_content_dir( $path ) {
-	if ( $real_path = realpath( $path ) ) {
-		$path = $real_path;
-	} else {
-		return false;
-	}
+function wpcf7_is_file_path_in_content_dir($path) {
+    if ($real_path = realpath($path)) {
+        $path = $real_path;
+    } else {
+        return false;
+    }
 
-	if ( 0 === strpos( $path, realpath( WP_CONTENT_DIR ) ) ) {
-		return true;
-	}
+    if (0 === strpos($path, realpath(WP_CONTENT_DIR))) {
+        return true;
+    }
 
-	if ( defined( 'UPLOADS' )
-	and 0 === strpos( $path, realpath( ABSPATH . UPLOADS ) ) ) {
-		return true;
-	}
+    if (defined('UPLOADS')
+    && 0 === strpos($path, realpath(ABSPATH.UPLOADS))) {
+        return true;
+    }
 
-	return false;
+    return false;
 }
